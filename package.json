@@ -14,7 +14,8 @@
     "start": "next start",
     "lint": "next lint",
     "format": "npx prettier --write .",
-    "test": "bun run test:watch && bun run test:coverage",
+    "format:check": "prettier --check .",
+    "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
   },
