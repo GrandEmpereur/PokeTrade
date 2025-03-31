@@ -1,36 +1,181 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Parfait, ton projet **PokeTrade** a tout pour être solide, ambitieux et fun ! 💪
 
-## Getting Started
+---
 
-First, run the development server:
+## ✅ Voici ce que j’ai préparé pour toi :
+1. **Logo généré** : un visuel stylisé pour "PokeTrade" (tu peux le télécharger ici 👇)
+2. **Architecture du projet** : structurée pour respecter SOLID + intégration des technos listées
+3. **README complet** : prêt à copier/coller sur GitHub
+
+---
+
+### 📦 Logo PokeTrade
+
+![Logo](sandbox:/mnt/data/A_2D_vector_graphic_displays_the_logo_and_accompan.png)
+
+---
+
+## 🧠 Architecture du projet (SOLID + Next.js 14 App Router)
+
+```
+poke-trade/
+│
+├── app/                        # App Router pages and layout
+│   ├── dashboard/             # UI pages (client components)
+│   └── api/                   # API routes (Server Actions / routes)
+│
+├── core/                      # Domain layer (SOLID)
+│   ├── domain/
+│   │   ├── pokemon/           # Entities, interfaces, value objects
+│   │   └── trade/
+│   ├── usecases/              # Business logic (use case oriented)
+│   └── services/              # Interfaces to external services
+│
+├── infrastructure/            # Concrete implementations
+│   ├── supabase/              # Supabase client and data access
+│   ├── stripe/                # Stripe API wrappers
+│   └── repositories/          # Repos implementing domain interfaces
+│
+├── ui/                        # Design system and UI components
+│   ├── components/
+│   └── layout/
+│
+├── lib/                       # Zod schemas, helpers, constants
+│
+├── tests/                     # Cypress + Jest tests
+│
+├── public/                    # Static assets (logo, images, etc.)
+│
+├── .github/                   # GitHub Actions CI/CD workflows
+│
+├── tailwind.config.js
+├── tsconfig.json
+├── package.json
+└── README.md
+```
+
+---
+
+## 📘 README.md (version complète)
+
+```markdown
+# 🧪 PokeTrade
+
+**PokeTrade** est une plateforme de Pokémon trading inspirée de TradingView. Les prix des Pokémon évoluent dans un marché simulé. Les utilisateurs peuvent acheter, vendre et suivre les fluctuations comme de vrais traders.
+
+---
+
+## 🚀 Stack Technique
+
+- **Framework** : [Next.js 14 (App Router)](https://nextjs.org)
+- **Backend-as-a-Service** : [Supabase](https://supabase.com)
+- **Base de données** : PostgreSQL (via Supabase)
+- **UI/UX** : Tailwind CSS, shadcn/ui
+- **Form validation** : Zod
+- **Tests** : Jest, Cypress
+- **CI/CD** : GitHub Actions
+- **Paiement** : Stripe
+
+---
+
+## 🎯 Fonctionnalités
+
+- 🔐 Authentification Supabase
+- 📈 Graphiques de prix pour chaque Pokémon
+- 🛒 Système de trading (achat, vente)
+- 💳 Paiement d’abonnement avec Stripe
+- 💼 Portefeuille utilisateur
+- 📊 Historique des transactions
+- ✅ UI responsive & stylée
+
+---
+
+## 🧱 Architecture SOLID
+
+Le projet suit les principes SOLID :
+- **S** : Domaines séparés dans `/core/domain`
+- **O** : Entités extensibles avec Zod
+- **L** : Interfaces clairement définies pour les services
+- **I** : Interfaces spécifiques aux fonctionnalités
+- **D** : Les dépendances sont injectées dans les cas d’usage
+
+---
+
+## 🛠️ Installation
+
+```bash
+git clone https://github.com/ton-compte/poketrade.git
+cd poketrade
+npm install
+cp .env.example .env.local
+```
+
+Configure `.env.local` :
+
+```env
+SUPABASE_URL=...
+SUPABASE_ANON_KEY=...
+STRIPE_SECRET_KEY=...
+```
+
+---
+
+## 🔎 Lancer le projet
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ✅ Tests
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Jest (unitaires)
 
-## Learn More
+```bash
+npm run test
+```
 
-To learn more about Next.js, take a look at the following resources:
+### Cypress (end-to-end)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npx cypress open
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🧪 CI/CD
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Les tests sont lancés automatiquement via GitHub Actions :
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Lint + Jest à chaque `push`
+- Déploiement via Vercel ou autre selon config
+
+---
+
+## 🧩 Technologies clés
+
+| Tech        | Utilisation                  |
+|-------------|------------------------------|
+| Next.js     | App router, SSR/ISR          |
+| Supabase    | Auth, DB, Realtime           |
+| Stripe      | Paiement des abonnements     |
+| Zod         | Schémas et validation        |
+| Jest        | Tests unitaires              |
+| Cypress     | Tests E2E                    |
+| Tailwind    | Design système CSS           |
+| shadcn/ui   | Composants UI                |
+
+---
+
+## 🧠 Contributeurs
+
+- [Ton Nom](https://github.com/ton-github)
+- Tu peux apparaître ici ! 😉
+
+---
+
+## 📜 Licence
+
+MIT
+```
