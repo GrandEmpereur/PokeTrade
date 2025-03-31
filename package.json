@@ -4,9 +4,7 @@
   "private": true,
   "engines": {
     "node": "^22",
-    "yarn": "^1",
-    "bun": "^1",
-    "npm": "^10"
+    "yarn": "^1"
   },
   "scripts": {
     "dev": "next dev --turbopack",
