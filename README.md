@@ -1,64 +1,13 @@
-Parfait, ton projet **PokeTrade** a tout pour être solide, ambitieux et fun ! 💪
+<p align="center">
+  <img src="./public/assets/images/readme/logo2.png" width="450" height="450" alt="Logo" />
+</p>
 
----
 
-## ✅ Voici ce que j’ai préparé pour toi :
-1. **Logo généré** : un visuel stylisé pour "PokeTrade" (tu peux le télécharger ici 👇)
-2. **Architecture du projet** : structurée pour respecter SOLID + intégration des technos listées
-3. **README complet** : prêt à copier/coller sur GitHub
-
----
-
-### 📦 Logo PokeTrade
-
-![Logo](sandbox:/mnt/data/A_2D_vector_graphic_displays_the_logo_and_accompan.png)
-
----
-
-## 🧠 Architecture du projet (SOLID + Next.js 14 App Router)
+## 🧠 Architecture du projet 
 
 ```
-poke-trade/
-│
-├── app/                        # App Router pages and layout
-│   ├── dashboard/             # UI pages (client components)
-│   └── api/                   # API routes (Server Actions / routes)
-│
-├── core/                      # Domain layer (SOLID)
-│   ├── domain/
-│   │   ├── pokemon/           # Entities, interfaces, value objects
-│   │   └── trade/
-│   ├── usecases/              # Business logic (use case oriented)
-│   └── services/              # Interfaces to external services
-│
-├── infrastructure/            # Concrete implementations
-│   ├── supabase/              # Supabase client and data access
-│   ├── stripe/                # Stripe API wrappers
-│   └── repositories/          # Repos implementing domain interfaces
-│
-├── ui/                        # Design system and UI components
-│   ├── components/
-│   └── layout/
-│
-├── lib/                       # Zod schemas, helpers, constants
-│
-├── tests/                     # Cypress + Jest tests
-│
-├── public/                    # Static assets (logo, images, etc.)
-│
-├── .github/                   # GitHub Actions CI/CD workflows
-│
-├── tailwind.config.js
-├── tsconfig.json
-├── package.json
-└── README.md
 ```
 
----
-
-## 📘 README.md (version complète)
-
-```markdown
 # 🧪 PokeTrade
 
 **PokeTrade** est une plateforme de Pokémon trading inspirée de TradingView. Les prix des Pokémon évoluent dans un marché simulé. Les utilisateurs peuvent acheter, vendre et suivre les fluctuations comme de vrais traders.
@@ -67,7 +16,7 @@ poke-trade/
 
 ## 🚀 Stack Technique
 
-- **Framework** : [Next.js 14 (App Router)](https://nextjs.org)
+- **Framework** : [Next.js 15 (App Router)](https://nextjs.org)
 - **Backend-as-a-Service** : [Supabase](https://supabase.com)
 - **Base de données** : PostgreSQL (via Supabase)
 - **UI/UX** : Tailwind CSS, shadcn/ui
@@ -107,15 +56,15 @@ Le projet suit les principes SOLID :
 git clone https://github.com/ton-compte/poketrade.git
 cd poketrade
 npm install
-cp .env.example .env.local
+cp .env.example 
+rename .env copy.example to .env.local
 ```
 
 Configure `.env.local` :
 
 ```env
-SUPABASE_URL=...
-SUPABASE_ANON_KEY=...
-STRIPE_SECRET_KEY=...
+NEXT_PUBLIC_SUPABASE_URL=''
+NEXT_PUBLIC_SUPABASE_ANON_KEY=''
 ```
 
 ---
@@ -178,4 +127,3 @@ Les tests sont lancés automatiquement via GitHub Actions :
 ## 📜 Licence
 
 MIT
-```
