@@ -17,6 +17,9 @@ package-lock.json
 # testing
 /coverage
 
+# Swc
+.swc
+
 # next.js
 /.next/
 /out/
