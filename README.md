@@ -2,10 +2,10 @@
   <img src="./public/assets/images/readme/logo2.png" width="450" height="450" alt="Logo" />
 </p>
 
-
-## 🧠 Architecture du projet 
+## 🧠 Architecture du projet
 
 ```
+
 ```
 
 # 🧪 PokeTrade
@@ -42,6 +42,7 @@
 ## 🧱 Architecture SOLID
 
 Le projet suit les principes SOLID :
+
 - **S** : Domaines séparés dans `/core/domain`
 - **O** : Entités extensibles avec Zod
 - **L** : Interfaces clairement définies pour les services
@@ -56,7 +57,7 @@ Le projet suit les principes SOLID :
 git clone https://github.com/ton-compte/poketrade.git
 cd poketrade
 npm install
-cp .env.example 
+cp .env.example
 rename .env copy.example to .env.local
 ```
 
@@ -104,16 +105,16 @@ Les tests sont lancés automatiquement via GitHub Actions :
 
 ## 🧩 Technologies clés
 
-| Tech        | Utilisation                  |
-|-------------|------------------------------|
-| Next.js     | App router, SSR/ISR          |
-| Supabase    | Auth, DB, Realtime           |
-| Stripe      | Paiement des abonnements     |
-| Zod         | Schémas et validation        |
-| Jest        | Tests unitaires              |
-| Cypress     | Tests E2E                    |
-| Tailwind    | Design système CSS           |
-| shadcn/ui   | Composants UI                |
+| Tech      | Utilisation              |
+| --------- | ------------------------ |
+| Next.js   | App router, SSR/ISR      |
+| Supabase  | Auth, DB, Realtime       |
+| Stripe    | Paiement des abonnements |
+| Zod       | Schémas et validation    |
+| Jest      | Tests unitaires          |
+| Cypress   | Tests E2E                |
+| Tailwind  | Design système CSS       |
+| shadcn/ui | Composants UI            |
 
 ---
 
