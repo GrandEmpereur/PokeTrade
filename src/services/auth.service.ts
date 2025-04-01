@@ -1,4 +1,5 @@
 import { createClient } from '@/utils/supabase/client'
+import { redirect } from 'next/navigation'
 import { z } from 'zod'
 
 const registerSchema = z.object({
@@ -89,18 +90,34 @@ export async function loginUser(data: LoginData) {
     }
 }
 
-export async function signInWithGithub() {
+export async function signInWithGitHub(code?: string) {
     const supabase = createClient()
-    const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'github',
-        options: {
-            redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
-        },
-    })
 
-    if (error) {
+    if (code) {
+        // Gestion du callback GitHub
+        const { error, data } = await supabase.auth.exchangeCodeForSession(code)
+        if (error) {
+            return {
+                error: error.message
+            }
+        }
         return {
-            error: error.message
+            success: true,
+            user: data.user
+        }
+    } else {
+        // Initiation de l'authentification GitHub
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'github',
+            options: {
+                redirectTo: `${window.location.origin}/login`,
+            },
+        })
+
+        if (error) {
+            return {
+                error: error.message
+            }
         }
     }
 }

@@ -1,7 +1,7 @@
 'use client'
 
-import { signOut } from '@/lib/services/auth.service'
-import { getUser, SupabaseUserData, User } from '@/lib/services/user.service'
+import { signOut } from '@/services/auth.service'
+import { getUser, SupabaseUserData, User } from '@/services/user.service'
 import { Button } from '@/components/ui/button'
 import { useState, useEffect } from 'react'
 import { redirect } from 'next/navigation'
