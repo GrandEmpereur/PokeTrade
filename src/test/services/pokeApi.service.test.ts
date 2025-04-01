@@ -1,7 +1,7 @@
 // pokeApiService.test.ts
 import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals';
-import { PokeApiService } from '@/lib/services/pokeApi.service';
-import { PokemonBasic, PokemonDetails } from '@/lib/types/pokemon.types';
+import { PokeApiService } from '@/services/pokeApi.service';
+import { PokemonBasic, PokemonDetails } from '@/types/pokemon.types';
 
 describe('PokeApiService', () => {
     let service: PokeApiService;

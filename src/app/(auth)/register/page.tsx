@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 import {
   registerFormSchema,
   type RegisterFormValues,
-} from '@/lib/validators/authSchema';
+} from '@/validators/authSchema';
 
 import { Button } from '@/components/ui/button';
 import {
