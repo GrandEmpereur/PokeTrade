@@ -1,4 +1,3 @@
-// pokeApiService.test.ts
 import {
   describe,
   it,
@@ -16,13 +15,12 @@ describe('PokeApiService', () => {
 
   beforeEach(() => {
     service = new PokeApiService();
-    // @ts-expect-error - Mock de l'API fetch qui fonctionne à l'exécution
-    global.fetch = jest.fn();
+    global.fetch = jest.fn() as jest.MockedFunction<typeof fetch>;
   });
 
   afterEach(() => {
     global.fetch = originalFetch;
-    jest.resetAllMocks();
+    jest.clearAllMocks();
   });
 
   describe('getPokemonList', () => {
@@ -34,16 +32,17 @@ describe('PokeApiService', () => {
 
       const mockResponse = {
         ok: true,
-        json: async () => ({ results: mockPokemonList }),
-      };
+        json: jest.fn().mockResolvedValue({ results: mockPokemonList }),
+      } as unknown as Response;
 
-      // @ts-expect-error - Les types fonctionnent à l'exécution
-      global.fetch.mockResolvedValue(mockResponse);
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue(
+        mockResponse,
+      );
 
       const result = await service.getPokemonList(2, 0);
 
       expect(global.fetch).toHaveBeenCalledWith(
-        'https://pokeapi.co/api/v2/pokemon?limit=2&offset=0'
+        'https://pokeapi.co/api/v2/pokemon?limit=2&offset=0',
       );
       expect(result).toEqual(mockPokemonList);
     });
@@ -52,14 +51,15 @@ describe('PokeApiService', () => {
       const mockResponse = {
         ok: false,
         status: 404,
-        json: async () => ({}),
-      };
+        json: jest.fn().mockResolvedValue({ error: 'Not Found' }),
+      } as unknown as Response;
 
-      // @ts-expect-error - Les types fonctionnent à l'exécution
-      global.fetch.mockResolvedValue(mockResponse);
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue(
+        mockResponse,
+      );
 
       await expect(service.getPokemonList(2, 0)).rejects.toThrow(
-        'Erreur API: 404'
+        'Erreur API: 404',
       );
     });
   });
@@ -81,16 +81,17 @@ describe('PokeApiService', () => {
 
       const mockResponse = {
         ok: true,
-        json: async () => mockPokemonDetails,
-      };
+        json: jest.fn().mockResolvedValue(mockPokemonDetails),
+      } as unknown as Response;
 
-      // @ts-expect-error - Les types fonctionnent à l'exécution
-      global.fetch.mockResolvedValue(mockResponse);
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue(
+       mockResponse,
+      );
 
       const result = await service.getPokemonDetails(1);
 
       expect(global.fetch).toHaveBeenCalledWith(
-        'https://pokeapi.co/api/v2/pokemon/1'
+        'https://pokeapi.co/api/v2/pokemon/1',
       );
       expect(result).toEqual(mockPokemonDetails);
     });
@@ -99,14 +100,15 @@ describe('PokeApiService', () => {
       const mockResponse = {
         ok: false,
         status: 500,
-        json: async () => ({}),
-      };
+        json: jest.fn().mockResolvedValue({ error: 'Internal Server Error' }),
+      } as unknown as Response;
 
-      // @ts-expect-error - Les types fonctionnent à l'exécution
-      global.fetch.mockResolvedValue(mockResponse);
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue(
+        mockResponse,
+      );
 
       await expect(service.getPokemonDetails('bulbasaur')).rejects.toThrow(
-        'Erreur API: 500'
+        'Erreur API: 500',
       );
     });
 
@@ -126,25 +128,23 @@ describe('PokeApiService', () => {
 
       const mockResponse = {
         ok: true,
-        json: async () => mockPokemonDetails,
-      };
+        json: jest.fn().mockResolvedValue(mockPokemonDetails),
+      } as unknown as Response;
 
-      // @ts-expect-error - Les types fonctionnent à l'exécution
-      global.fetch.mockResolvedValue(mockResponse);
-
-      // Test avec paramètre numérique
-      await service.getPokemonDetails(1);
-      expect(global.fetch).toHaveBeenCalledWith(
-        'https://pokeapi.co/api/v2/pokemon/1'
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue(
+        mockResponse,
       );
 
-      // Réinitialiser les compteurs d'appels
+      await service.getPokemonDetails(1);
+      expect(global.fetch).toHaveBeenCalledWith(
+        'https://pokeapi.co/api/v2/pokemon/1',
+      );
+
       jest.clearAllMocks();
 
-      // Test avec paramètre string
       await service.getPokemonDetails('bulbasaur');
       expect(global.fetch).toHaveBeenCalledWith(
-        'https://pokeapi.co/api/v2/pokemon/bulbasaur'
+        'https://pokeapi.co/api/v2/pokemon/bulbasaur',
       );
     });
   });
