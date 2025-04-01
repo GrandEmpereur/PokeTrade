@@ -1,4 +1,4 @@
-import { PokemonBasic, PokemonDetails } from '@/types/pokemon.types';
+import { PokemonBasic, PokemonDetails } from '@/types/pokemon/pokemon.types';
 
 export class PokeApiService {
   private baseUrl = 'https://pokeapi.co/api/v2';
@@ -13,8 +13,20 @@ export class PokeApiService {
       `${this.baseUrl}/pokemon?limit=${limit}&offset=${offset}`
     );
     if (!res.ok) throw new Error(`Erreur API: ${res.status}`);
+
     const data = await res.json();
-    return data.results as PokemonBasic[];
+    
+    const pokemons: PokemonBasic[] = data.results.map((item: any) => {
+      const id = Number(item.url.split("/").filter(Boolean).pop());
+      return {
+        name: item.name,
+        url: item.url,
+        id,
+        sprite: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
+      };
+    });
+
+    return pokemons;
   }
 
   /**
