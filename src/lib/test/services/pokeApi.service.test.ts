@@ -36,13 +36,13 @@ describe('PokeApiService', () => {
       } as unknown as Response;
 
       (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue(
-        mockResponse,
+        mockResponse
       );
 
       const result = await service.getPokemonList(2, 0);
 
       expect(global.fetch).toHaveBeenCalledWith(
-        'https://pokeapi.co/api/v2/pokemon?limit=2&offset=0',
+        'https://pokeapi.co/api/v2/pokemon?limit=2&offset=0'
       );
       expect(result).toEqual(mockPokemonList);
     });
@@ -55,11 +55,11 @@ describe('PokeApiService', () => {
       } as unknown as Response;
 
       (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue(
-        mockResponse,
+        mockResponse
       );
 
       await expect(service.getPokemonList(2, 0)).rejects.toThrow(
-        'Erreur API: 404',
+        'Erreur API: 404'
       );
     });
   });
@@ -85,13 +85,13 @@ describe('PokeApiService', () => {
       } as unknown as Response;
 
       (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue(
-       mockResponse,
+        mockResponse
       );
 
       const result = await service.getPokemonDetails(1);
 
       expect(global.fetch).toHaveBeenCalledWith(
-        'https://pokeapi.co/api/v2/pokemon/1',
+        'https://pokeapi.co/api/v2/pokemon/1'
       );
       expect(result).toEqual(mockPokemonDetails);
     });
@@ -104,11 +104,11 @@ describe('PokeApiService', () => {
       } as unknown as Response;
 
       (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue(
-        mockResponse,
+        mockResponse
       );
 
       await expect(service.getPokemonDetails('bulbasaur')).rejects.toThrow(
-        'Erreur API: 500',
+        'Erreur API: 500'
       );
     });
 
@@ -132,19 +132,19 @@ describe('PokeApiService', () => {
       } as unknown as Response;
 
       (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue(
-        mockResponse,
+        mockResponse
       );
 
       await service.getPokemonDetails(1);
       expect(global.fetch).toHaveBeenCalledWith(
-        'https://pokeapi.co/api/v2/pokemon/1',
+        'https://pokeapi.co/api/v2/pokemon/1'
       );
 
       jest.clearAllMocks();
 
       await service.getPokemonDetails('bulbasaur');
       expect(global.fetch).toHaveBeenCalledWith(
-        'https://pokeapi.co/api/v2/pokemon/bulbasaur',
+        'https://pokeapi.co/api/v2/pokemon/bulbasaur'
       );
     });
   });
