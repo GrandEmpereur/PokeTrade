@@ -1,7 +1,13 @@
+import NavBar from '@/components/navBar';
 import React from 'react';
 
 function SubRootLayout({ children }: { children: React.ReactNode }) {
-  return <div>{children}</div>;
+  return (
+    <main>
+      <NavBar />
+      {children}
+    </main>
+  );
 }
 
 export default SubRootLayout;
