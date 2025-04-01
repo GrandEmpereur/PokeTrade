@@ -29,6 +29,7 @@ package-lock.json
 
 # misc
 .DS_Store
+.idea
 *.pem
 
 # debug
