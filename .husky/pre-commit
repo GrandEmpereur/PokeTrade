@@ -1,1 +1,2 @@
-bun test
+next lint
+yarn test
