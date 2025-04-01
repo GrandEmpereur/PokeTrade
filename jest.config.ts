@@ -16,8 +16,8 @@ const config: Config = {
   collectCoverageFrom: [
     "src/**/*.{js,jsx,ts,tsx}",
     "!src/**/*.d.ts",
-    "!src/lib/test/**",
-    "!src/lib/types/**",
+    "!src/test/**",
+    "!src/types/**",
   ],
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
 

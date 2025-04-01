@@ -1,15 +1,12 @@
 'use client';
 
 import type React from 'react';
-
 import { useState } from 'react';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@/lib/utils';
-import {
-  registerFormSchema,
-  type RegisterFormValues,
-} from '@/validators/authSchema';
+import { registerFormSchema, type RegisterFormValues } from '@/validators/authSchema';
+import { registerUser } from '@/lib/services/auth.service';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -22,9 +19,13 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function RegisterForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<boolean>(false);
+  const router = useRouter();
 
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerFormSchema),
@@ -38,14 +39,23 @@ export default function RegisterForm() {
 
   async function onSubmit(values: RegisterFormValues) {
     setIsLoading(true);
+    setError(null);
+    setSuccess(false);
 
     try {
-      // Here you would handle the registration logic
-      console.log(values);
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const result = await registerUser(values);
+      
+      if (result?.error) {
+        setError(result.error);
+      } else if (result?.success) {
+        setSuccess(true);
+        // Redirection après un court délai pour permettre à l'utilisateur de voir le message de succès
+        setTimeout(() => {
+          router.push('/');
+        }, 2000);
+      }
     } catch (error) {
-      console.error(error);
+      setError('Une erreur est survenue lors de l\'inscription');
     } finally {
       setIsLoading(false);
     }
@@ -54,11 +64,23 @@ export default function RegisterForm() {
   return (
     <div className={cn('flex flex-col gap-6')}>
       <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-2xl font-bold">Create an account</h1>
+        <h1 className="text-2xl font-bold">Créer un compte</h1>
         <p className="text-balance text-sm text-muted-foreground">
-          Enter your details below to create your account
+          Entrez vos informations pour créer votre compte
         </p>
       </div>
+
+      {error && (
+        <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">
+          {error}
+        </div>
+      )}
+
+      {success && (
+        <div className="bg-green-500/15 text-green-500 text-sm p-3 rounded-md">
+          Compte créé avec succès ! Redirection...
+        </div>
+      )}
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6">
@@ -67,7 +89,7 @@ export default function RegisterForm() {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
+                <FormLabel>Nom</FormLabel>
                 <FormControl>
                   <Input placeholder="John Doe" {...field} />
                 </FormControl>
@@ -95,7 +117,7 @@ export default function RegisterForm() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>Mot de passe</FormLabel>
                 <FormControl>
                   <Input type="password" {...field} />
                 </FormControl>
@@ -109,7 +131,7 @@ export default function RegisterForm() {
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Confirm Password</FormLabel>
+                <FormLabel>Confirmer le mot de passe</FormLabel>
                 <FormControl>
                   <Input type="password" {...field} />
                 </FormControl>
@@ -119,12 +141,12 @@ export default function RegisterForm() {
           />
 
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? 'Creating account...' : 'Create Account'}
+            {isLoading ? 'Création du compte...' : 'Créer un compte'}
           </Button>
 
           <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
             <span className="relative z-10 bg-background px-2 text-muted-foreground">
-              Or continue with
+              Ou continuer avec
             </span>
           </div>
 
@@ -139,15 +161,15 @@ export default function RegisterForm() {
                 fill="currentColor"
               />
             </svg>
-            Sign up with GitHub
+            S'inscrire avec GitHub
           </Button>
         </form>
       </Form>
 
       <div className="text-center text-sm">
-        Already have an account?{' '}
+        Déjà un compte ?{' '}
         <Link href="/login" className="underline underline-offset-4">
-          Login
+          Se connecter
         </Link>
       </div>
     </div>

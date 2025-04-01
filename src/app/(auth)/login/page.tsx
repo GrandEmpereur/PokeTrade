@@ -1,15 +1,13 @@
 'use client';
 
 import type React from 'react';
-
 import { useState } from 'react';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@/lib/utils';
-import {
-  loginFormSchema,
-  type LoginFormValues,
-} from '@/validators/authSchema';
+import { loginFormSchema, type LoginFormValues } from '@/validators/authSchema';
+import { loginUser, signInWithGithub } from '@/lib/services/auth.service';
+import { createClient } from '@/utils/supabase/client';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -22,9 +20,13 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function LoginForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<boolean>(false);
+  const router = useRouter();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema),
@@ -34,16 +36,32 @@ export default function LoginForm() {
     },
   });
 
+  async function signInWithGithub() {
+    const supabase = createClient()
+    const response = await supabase.auth.signInWithOAuth({
+      provider: 'github',
+    })
+  }
+
   async function onSubmit(values: LoginFormValues) {
     setIsLoading(true);
+    setError(null);
+    setSuccess(false);
 
     try {
-      // Here you would handle the login logic
-      console.log(values);
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const result = await loginUser(values);
+      
+      if (result?.error) {
+        setError(result.error);
+      } else if (result?.success) {
+        setSuccess(true);
+        // Redirection après un court délai pour permettre à l'utilisateur de voir le message de succès
+        setTimeout(() => {
+          router.push('/dashboard');
+        }, 2000);
+      }
     } catch (error) {
-      console.error(error);
+      setError('Une erreur est survenue lors de la connexion');
     } finally {
       setIsLoading(false);
     }
@@ -52,11 +70,23 @@ export default function LoginForm() {
   return (
     <div className={cn('flex flex-col gap-6')}>
       <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-2xl font-bold">Login to your account</h1>
+        <h1 className="text-2xl font-bold">Connexion</h1>
         <p className="text-balance text-sm text-muted-foreground">
-          Enter your email below to login to your account
+          Entrez vos identifiants pour vous connecter
         </p>
       </div>
+
+      {error && (
+        <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">
+          {error}
+        </div>
+      )}
+
+      {success && (
+        <div className="bg-green-500/15 text-green-500 text-sm p-3 rounded-md">
+          Connexion réussie ! Redirection...
+        </div>
+      )}
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6">
@@ -80,13 +110,13 @@ export default function LoginForm() {
             render={({ field }) => (
               <FormItem>
                 <div className="flex items-center">
-                  <FormLabel>Password</FormLabel>
-                  <a
-                    href="#"
+                  <FormLabel>Mot de passe</FormLabel>
+                  <Link
+                    href="/forgot-password"
                     className="ml-auto text-sm underline-offset-4 hover:underline"
                   >
-                    Forgot your password?
-                  </a>
+                    Mot de passe oublié ?
+                  </Link>
                 </div>
                 <FormControl>
                   <Input type="password" {...field} />
@@ -97,16 +127,16 @@ export default function LoginForm() {
           />
 
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? 'Logging in...' : 'Login'}
+            {isLoading ? 'Connexion...' : 'Se connecter'}
           </Button>
 
           <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
             <span className="relative z-10 bg-background px-2 text-muted-foreground">
-              Or continue with
+              Ou continuer avec
             </span>
           </div>
 
-          <Button variant="outline" className="w-full" type="button">
+          <Button variant="outline" className="w-full" type="button" onClick={signInWithGithub}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -117,15 +147,15 @@ export default function LoginForm() {
                 fill="currentColor"
               />
             </svg>
-            Login with GitHub
+            Se connecter avec GitHub
           </Button>
         </form>
       </Form>
 
       <div className="text-center text-sm">
-        Don&apos;t have an account?{' '}
+        Pas encore de compte ?{' '}
         <Link href="/register" className="underline underline-offset-4">
-          Sign up
+          S'inscrire
         </Link>
       </div>
     </div>
