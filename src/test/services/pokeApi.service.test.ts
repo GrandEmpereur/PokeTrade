@@ -1,5 +1,12 @@
-// pokeApiService.test.ts
-import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals';
+import {
+    describe,
+    it,
+    expect,
+    beforeEach,
+    afterEach,
+    jest,
+} from '@jest/globals';
+
 import { PokeApiService } from '@/services/pokeApi.service';
 import { PokemonBasic, PokemonDetails } from '@/types/pokemon.types';
 
@@ -9,34 +16,34 @@ describe('PokeApiService', () => {
 
     beforeEach(() => {
         service = new PokeApiService();
-        // @ts-expect-error - Mock de l'API fetch qui fonctionne à l'exécution
-        global.fetch = jest.fn();
+        global.fetch = jest.fn() as jest.MockedFunction<typeof fetch>;
     });
 
     afterEach(() => {
         global.fetch = originalFetch;
-        jest.resetAllMocks();
+        jest.clearAllMocks();
     });
 
     describe('getPokemonList', () => {
         it('should return a list of PokemonBasic when API call is successful', async () => {
             const mockPokemonList: PokemonBasic[] = [
                 { name: 'bulbasaur', url: 'https://pokeapi.co/api/v2/pokemon/1' },
-                { name: 'charmander', url: 'https://pokeapi.co/api/v2/pokemon/4' }
+                { name: 'charmander', url: 'https://pokeapi.co/api/v2/pokemon/4' },
             ];
 
             const mockResponse = {
                 ok: true,
-                json: async () => ({ results: mockPokemonList })
-            };
+                json: jest.fn().mockResolvedValue({ results: mockPokemonList }),
+            } as unknown as Response;
 
-            // @ts-expect-error - Les types fonctionnent à l'exécution
-            global.fetch.mockResolvedValue(mockResponse);
+            (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue(
+              mockResponse,
+            );
 
             const result = await service.getPokemonList(2, 0);
 
             expect(global.fetch).toHaveBeenCalledWith(
-                'https://pokeapi.co/api/v2/pokemon?limit=2&offset=0'
+              'https://pokeapi.co/api/v2/pokemon?limit=2&offset=0',
             );
             expect(result).toEqual(mockPokemonList);
         });
@@ -45,13 +52,16 @@ describe('PokeApiService', () => {
             const mockResponse = {
                 ok: false,
                 status: 404,
-                json: async () => ({})
-            };
+                json: jest.fn().mockResolvedValue({ error: 'Not Found' }),
+            } as unknown as Response;
 
-            // @ts-expect-error - Les types fonctionnent à l'exécution
-            global.fetch.mockResolvedValue(mockResponse);
+            (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue(
+              mockResponse,
+            );
 
-            await expect(service.getPokemonList(2, 0)).rejects.toThrow('Erreur API: 404');
+            await expect(service.getPokemonList(2, 0)).rejects.toThrow(
+              'Erreur API: 404',
+            );
         });
     });
 
@@ -61,29 +71,28 @@ describe('PokeApiService', () => {
                 id: 1,
                 name: 'bulbasaur',
                 sprites: {
-                    front_default: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png'
+                    front_default:
+                      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png',
                 },
-                types: [
-                    { type: { name: 'grass' } },
-                    { type: { name: 'poison' } }
-                ],
+                types: [{ type: { name: 'grass' } }, { type: { name: 'poison' } }],
                 base_experience: 64,
                 height: 7,
-                weight: 69
+                weight: 69,
             };
 
             const mockResponse = {
                 ok: true,
-                json: async () => mockPokemonDetails
-            };
+                json: jest.fn().mockResolvedValue(mockPokemonDetails),
+            } as unknown as Response;
 
-            // @ts-expect-error - Les types fonctionnent à l'exécution
-            global.fetch.mockResolvedValue(mockResponse);
+            (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue(
+              mockResponse,
+            );
 
             const result = await service.getPokemonDetails(1);
 
             expect(global.fetch).toHaveBeenCalledWith(
-                'https://pokeapi.co/api/v2/pokemon/1'
+              'https://pokeapi.co/api/v2/pokemon/1',
             );
             expect(result).toEqual(mockPokemonDetails);
         });
@@ -92,13 +101,16 @@ describe('PokeApiService', () => {
             const mockResponse = {
                 ok: false,
                 status: 500,
-                json: async () => ({})
-            };
+                json: jest.fn().mockResolvedValue({ error: 'Internal Server Error' }),
+            } as unknown as Response;
 
-            // @ts-expect-error - Les types fonctionnent à l'exécution
-            global.fetch.mockResolvedValue(mockResponse);
+            (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue(
+              mockResponse,
+            );
 
-            await expect(service.getPokemonDetails('bulbasaur')).rejects.toThrow('Erreur API: 500');
+            await expect(service.getPokemonDetails('bulbasaur')).rejects.toThrow(
+              'Erreur API: 500',
+            );
         });
 
         it('should work with both string and number parameters', async () => {
@@ -106,39 +118,35 @@ describe('PokeApiService', () => {
                 id: 1,
                 name: 'bulbasaur',
                 sprites: {
-                    front_default: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png'
+                    front_default:
+                      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png',
                 },
-                types: [
-                    { type: { name: 'grass' } },
-                    { type: { name: 'poison' } }
-                ],
+                types: [{ type: { name: 'grass' } }, { type: { name: 'poison' } }],
                 base_experience: 64,
                 height: 7,
-                weight: 69
+                weight: 69,
             };
 
             const mockResponse = {
                 ok: true,
-                json: async () => mockPokemonDetails
-            };
+                json: jest.fn().mockResolvedValue(mockPokemonDetails),
+            } as unknown as Response;
 
-            // @ts-expect-error - Les types fonctionnent à l'exécution
-            global.fetch.mockResolvedValue(mockResponse);
-
-            // Test avec paramètre numérique
-            await service.getPokemonDetails(1);
-            expect(global.fetch).toHaveBeenCalledWith(
-                'https://pokeapi.co/api/v2/pokemon/1'
+            (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue(
+              mockResponse,
             );
 
-            // Réinitialiser les compteurs d'appels
+            await service.getPokemonDetails(1);
+            expect(global.fetch).toHaveBeenCalledWith(
+              'https://pokeapi.co/api/v2/pokemon/1',
+            );
+
             jest.clearAllMocks();
 
-            // Test avec paramètre string
             await service.getPokemonDetails('bulbasaur');
             expect(global.fetch).toHaveBeenCalledWith(
-                'https://pokeapi.co/api/v2/pokemon/bulbasaur'
+              'https://pokeapi.co/api/v2/pokemon/bulbasaur',
             );
         });
     });
-}); 
+});
