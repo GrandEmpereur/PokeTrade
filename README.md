@@ -12,6 +12,79 @@ where users can buy, sell, and track price trends just like real traders.
 ## 🏗️ Project Architecture
 
 ```
+├── .env.example
+├── .gitignore
+├── .husky
+    ├── .gitignore
+    ├── commit-msg
+    └── pre-commit
+├── .prettierignore
+├── .prettierrc
+├── README.md
+├── bun.lock
+├── commitlint.config.js
+├── components.json
+├── eslint.config.mjs
+├── next.config.ts
+├── package.json
+├── postcss.config.mjs
+├── public
+    ├── assets
+    │   └── images
+    │   │   ├── auth
+    │   │       └── auth-bg.png
+    │   │   └── readme
+    │   │       ├── logo.png
+    │   │       └── logo2.png
+    ├── file.svg
+    ├── globe.svg
+    ├── next.svg
+    ├── vercel.svg
+    └── window.svg
+├── src
+    ├── app
+    │   ├── (auth)
+    │   │   ├── layout.tsx
+    │   │   ├── login
+    │   │   │   └── page.tsx
+    │   │   └── register
+    │   │   │   └── page.tsx
+    │   ├── (root)
+    │   │   ├── layout.tsx
+    │   │   └── page.tsx
+    │   ├── favicon.ico
+    │   ├── globals.css
+    │   └── layout.tsx
+    ├── components
+    │   └── ui
+    │   │   ├── button.tsx
+    │   │   ├── card.tsx
+    │   │   ├── chart.tsx
+    │   │   ├── checkbox.tsx
+    │   │   ├── form.tsx
+    │   │   ├── input-otp.tsx
+    │   │   ├── input.tsx
+    │   │   ├── label.tsx
+    │   │   ├── select.tsx
+    │   │   ├── separator.tsx
+    │   │   ├── skeleton.tsx
+    │   │   ├── sonner.tsx
+    │   │   ├── switch.tsx
+    │   │   └── textarea.tsx
+    ├── lib
+    │   ├── services
+    │   │   └── pokeApi.service.ts
+    │   ├── types
+    │   │   └── pokemon.types.ts
+    │   ├── utils.ts
+    │   └── validators
+    │   │   └── authSchema.ts
+    └── utils
+    │   └── supabase
+    │       ├── client.ts
+    │       ├── middleware.ts
+    │       └── serveur.ts
+└── tsconfig.json
 
 ```
 
