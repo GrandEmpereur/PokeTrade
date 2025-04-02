@@ -67,15 +67,11 @@ export default function NavBar() {
             >
               Login
             </Link>
-            <Button
-              variant="outline"
-              className="hidden md:flex border-neutral-700 bg-transparent text-white hover:bg-neutral-800 h-8 px-3 py-1 text-xs"
-            >
-              Get a demo
-            </Button>
-            <Button className="bg-white text-black hover:bg-gray-200 h-8 px-3 py-1 text-xs rounded-full">
-              Sign up
-            </Button>
+            <Link href="/register">
+              <Button className="bg-white text-black hover:bg-gray-200 h-8 px-3 py-1 text-xs rounded-full">
+                Sign up
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

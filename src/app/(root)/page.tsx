@@ -12,7 +12,6 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
       <main className="flex-1 flex flex-col items-center justify-center">
-        {/* Hero Section - 100vh */}
         <section className="relative flex items-center justify-center w-full h-screen bg-black overflow-hidden">
           <div className="absolute inset-0 z-0 opacity-40">
             <Image
@@ -58,7 +57,7 @@ export default function Home() {
                 <Button
                   variant="outline"
                   size="lg"
-                  className="border-neutral-700 bg-transparent text-white hover:bg-neutral-800"
+                  className="bg-transparent border-white text-white hover:bg-white hover:text-black"
                 >
                   Get a demo
                 </Button>
@@ -83,73 +82,102 @@ export default function Home() {
             </motion.div>
           </div>
         </section>
-      </main>
 
-      <footer className="w-full border-t bg-background">
-        <div className="container flex flex-col gap-8 px-4 py-10 md:px-6 lg:flex-row lg:gap-12">
-          <div className="flex flex-col gap-4 lg:w-1/3">
-            <div className="flex items-center gap-2">
-              <BarChart2 className="h-6 w-6 text-emerald-500" />
-              <span className="text-xl font-bold">PokéTrade</span>
+        {/* Technologies Section */}
+        <section className="w-full py-20 ">
+          <div className="container px-4 md:px-6 mx-auto flex flex-col items-center gap-y-5">
+            <div className="text-center mb-12">
+              <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                viewport={{ once: true }}
+                className="text-lg mb-4"
+              >
+                Powered by Modern Technologies
+              </motion.h2>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                viewport={{ once: true }}
+                className="text-sm text-muted max-w-2xl mx-auto"
+              >
+                Built with the latest tools and frameworks to deliver a
+                seamless, performant, and secure trading experience for Pokémon
+                collectors.
+              </motion.p>
             </div>
-            <p className="text-sm">
-              The most advanced trading platform for Pokémon collectors and
-              traders. Track, analyze, and trade with confidence.
-            </p>
-            <div className="flex gap-4">
-              {['Twitter', 'GitHub', 'Discord', 'LinkedIn'].map((social) => (
-                <Link key={social} href="#" className="transition-colors">
-                  {social}
-                </Link>
+
+            <div className=" flex flex-wrap gap-4 items-center justify-center">
+              {[
+                {
+                  name: 'Next.js',
+                  logo: '/assets/images/tech/nextjs.svg',
+                  description: 'React framework for production',
+                },
+                {
+                  name: 'Cursor',
+                  logo: '/assets/images/tech/cursor.svg',
+                  description: 'AI-powered coding assistant',
+                },
+                {
+                  name: 'Supabase',
+                  logo: '/assets/images/tech/supabase.svg',
+                  description: 'Open source Firebase alternative',
+                },
+                {
+                  name: 'Prisma',
+                  logo: '/assets/images/tech/prisma.svg',
+                  description: 'Next-generation ORM',
+                },
+                {
+                  name: 'Tailwind CSS',
+                  logo: '/assets/images/tech/tailwind.svg',
+                  description: 'Utility-first CSS framework',
+                },
+                {
+                  name: 'React',
+                  logo: '/assets/images/tech/react.svg',
+                  description: 'JavaScript library for user interfaces',
+                },
+                {
+                  name: 'Framer Motion',
+                  logo: '/assets/images/tech/framer-motion.svg',
+                  description: 'Production-ready motion library',
+                },
+                {
+                  name: 'Shadcn UI',
+                  logo: '/assets/images/tech/shadcn.svg',
+                  description: 'Beautifully designed components',
+                },
+              ].map((tech, index) => (
+                <motion.div
+                  key={tech.name}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                  className="flex flex-col items-center"
+                >
+                  <div className="h-20 w-20 relative mb-4 text-white">
+                    <Image
+                      src={tech.logo}
+                      alt={`${tech.name} logo`}
+                      fill
+                      className="object-contain text-white"
+                    />
+                  </div>
+                </motion.div>
               ))}
             </div>
+
+            <Link href="#">
+              <Button>Our Customers</Button>
+            </Link>
           </div>
-          <div className="grid flex-1 grid-cols-2 gap-8 sm:grid-cols-4">
-            {[
-              {
-                title: 'Product',
-                links: ['Features', 'Pricing', 'API', 'Integrations'],
-              },
-              {
-                title: 'Resources',
-                links: ['Documentation', 'Guides', 'Support', 'Community'],
-              },
-              {
-                title: 'Company',
-                links: ['About', 'Careers', 'Contact', 'Partners'],
-              },
-              {
-                title: 'Legal',
-                links: ['Privacy', 'Terms', 'Cookies', 'Licenses'],
-              },
-            ].map((section) => (
-              <div key={section.title} className="flex flex-col gap-2">
-                <h3 className="text-sm font-medium">{section.title}</h3>
-                <ul className="flex flex-col gap-2 text-sm">
-                  {section.links.map((link) => (
-                    <li key={link}>
-                      <Link href="#" className="transition-colors">
-                        {link}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="border-t py-6">
-          <div className="container flex flex-col items-center justify-between gap-4 px-4 md:px-6 lg:flex-row">
-            <p className="text-center text-sm lg:text-left">
-              © 2025 PokéTrade. All rights reserved.
-            </p>
-            <p className="text-center text-sm lg:text-left">
-              Pokémon and Pokémon character names are trademarks of Nintendo.
-              This site is not affiliated with Nintendo.
-            </p>
-          </div>
-        </div>
-      </footer>
+        </section>
+      </main>
     </div>
   );
 }
