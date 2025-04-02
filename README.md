@@ -223,8 +223,6 @@ GitHub Actions automatically runs tests:
 - Linting + Jest on each `push`
 - Deployment via Vercel (or another platform, depending on configuration)
 
----
-
 ## 🔗 NFT Smart Contract Development and Integration
 
 # 1. Designing and Developing Smart Contracts to Accept Payments in the Form of NFTs
@@ -308,9 +306,13 @@ npx hardhat run scripts/deploy.js --network sepolia
 
 **Unit Tests**:
 
-- Implemented in test/PaymentNFT.test.js.
-- Verify ```payAndMint()```, ```withdraw()```, and revert if ```msg.value == 0```.
-- Run successfully on local Hardhat.
+- Placed in ```test/PaymentNFT.test.ts```.
+- Confirm the following behaviors:
+  - Mints an NFT if the user pays the required Ether
+  - Reverts if the user sends zero Ether
+  - Allows the contract owner to withdraw collected funds
+
+These tests confirm that the essential functionalities of your smart contract (payment for NFT, revert in case of no payment, and fund withdrawal) work correctly and behave as intended.
 
 **Integration Tests**:
 
@@ -326,9 +328,9 @@ npx hardhat run scripts/deploy.js --network sepolia
 
 ##### 2. Testnet Deployment
 
-- ❌ Obtain test ETH on **Sepolia**.
-- ❌ Deploy via Hardhat (`scripts/deploy.js`).
-- ❌ Verify the address and code on Etherscan.
+- ✅ Obtained test ETH on **Sepolia**.
+- ✅ Deployed via Hardhat (`scripts/deploy.js`).
+- ✅ Verified the address and code on Etherscan.
 
 ##### 3. Supabase Integration
 

@@ -1,2 +1,9 @@
 next lint
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+nvm use 22
+
+echo "Node version in Husky: $(node -v)"
 yarn test
