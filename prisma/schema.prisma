@@ -9,55 +9,215 @@ datasource db {
 }
 
 model User {
-  id       String    @id @default(uuid())
-  username String    @unique
-  email    String    @unique
-  password String
-  pokemons Pokemon[]
-  tradesSent Trade[] @relation("SentTrades")
-  tradesReceived Trade[] @relation("ReceivedTrades")
-  transactionsSent Transaction[] @relation("SentTransactions")
+  id                   String        @id @default(uuid())
+  username             String        @unique
+  email                String        @unique
+  password             String
+  createdAt            DateTime      @default(now())
+  avatar               String?
+  bio                  String?
+  isVerified           Boolean       @default(false)
+  reputation           Int           @default(0)
+  updatedAt            DateTime      @updatedAt
+  alerts               Alert[]
+  charts               Chart[]
+  comments             Comment[]
+  followers            Follow[]      @relation("Followers")
+  following            Follow[]      @relation("Following")
+  orders               Order[]
+  pokemons             Pokemon[]
+  portfolio            Portfolio?
+  posts                Post[]
+  tradesReceived       Trade[]       @relation("ReceivedTrades")
+  tradesSent           Trade[]       @relation("SentTrades")
   transactionsReceived Transaction[] @relation("ReceivedTransactions")
-  portfolio Portfolio?
-  wishlist  Wishlist?
-  createdAt DateTime @default(now())
+  transactionsSent     Transaction[] @relation("SentTransactions")
+  wishlist             Wishlist?
 }
 
 model Pokemon {
-  id        String  @id @default(uuid())
-  name      String
-  type      String
-  level     Int     @default(1)
-  ownerId   String
-  owner     User    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  portfolio Portfolio? @relation(fields: [portfolioId], references: [id], onDelete: SetNull)
-  wishlist  Wishlist?  @relation(fields: [wishlistId], references: [id], onDelete: SetNull)
+  id            String             @id @default(uuid())
+  name          String
+  type          String
+  level         Int                @default(1)
+  ownerId       String
+  portfolioId   String?
+  wishlistId    String?
+  createdAt     DateTime           @default(now())
+  description   String?
+  image         String?
+  marketCap     Float?             @default(0)
+  price         Float              @default(0)
+  rarity        String?
+  updatedAt     DateTime           @updatedAt
+  alerts        Alert[]
+  charts        Chart[]
+  orders        Order[]
+  owner         User               @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  portfolio     Portfolio?         @relation(fields: [portfolioId], references: [id])
+  wishlist      Wishlist?          @relation(fields: [wishlistId], references: [id])
+  attributes    PokemonAttributes?
+  posts         Post[]
+  priceHistory  PriceHistory[]
   tradePokemons TradePokemon[]
-  portfolioId String?
-  wishlistId String?
-  createdAt DateTime @default(now())
 }
 
 model Trade {
-  id         String    @id @default(uuid())
-  senderId   String
-  receiverId String
-  status     TradeStatus @default(PENDING)
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  sender     User      @relation("SentTrades", fields: [senderId], references: [id])
-  receiver   User      @relation("ReceivedTrades", fields: [receiverId], references: [id])
+  id            String         @id @default(uuid())
+  senderId      String
+  receiverId    String
+  status        TradeStatus    @default(PENDING)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  receiver      User           @relation("ReceivedTrades", fields: [receiverId], references: [id])
+  sender        User           @relation("SentTrades", fields: [senderId], references: [id])
   tradePokemons TradePokemon[]
-  transaction Transaction?
+  transaction   Transaction?
 }
 
 model TradePokemon {
-  id         String  @id @default(uuid())
-  tradeId    String
+  id        String   @id @default(uuid())
+  tradeId   String
+  pokemonId String
+  createdAt DateTime @default(now())
+  pokemon   Pokemon  @relation(fields: [pokemonId], references: [id], onDelete: Cascade)
+  trade     Trade    @relation(fields: [tradeId], references: [id], onDelete: Cascade)
+}
+
+model Transaction {
+  id          String     @id @default(uuid())
+  tradeId     String     @unique
+  senderId    String
+  receiverId  String
+  amount      Float
+  timestamp   DateTime   @default(now())
+  portfolioId String?
+  portfolio   Portfolio? @relation(fields: [portfolioId], references: [id])
+  receiver    User       @relation("ReceivedTransactions", fields: [receiverId], references: [id])
+  sender      User       @relation("SentTransactions", fields: [senderId], references: [id])
+  trade       Trade      @relation(fields: [tradeId], references: [id])
+}
+
+model Portfolio {
+  id           String        @id @default(uuid())
+  userId       String        @unique
+  totalValue   Float         @default(0.0)
+  updatedAt    DateTime      @updatedAt
+  pokemons     Pokemon[]
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+}
+
+model Wishlist {
+  id        String    @id @default(uuid())
+  userId    String    @unique
+  createdAt DateTime  @default(now())
+  pokemons  Pokemon[]
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PriceHistory {
+  id        String   @id @default(uuid())
+  pokemonId String
+  price     Float
+  volume    Int      @default(0)
+  timestamp DateTime @default(now())
+  pokemon   Pokemon  @relation(fields: [pokemonId], references: [id])
+
+  @@index([pokemonId, timestamp])
+}
+
+model Chart {
+  id         String   @id @default(uuid())
+  userId     String
   pokemonId  String
-  trade      Trade   @relation(fields: [tradeId], references: [id], onDelete: Cascade)
-  pokemon    Pokemon @relation(fields: [pokemonId], references: [id], onDelete: Cascade)
+  layout     Json
+  indicators Json?
   createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  pokemon    Pokemon  @relation(fields: [pokemonId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+}
+
+model Alert {
+  id        String         @id @default(uuid())
+  userId    String
+  pokemonId String
+  condition AlertCondition
+  price     Float
+  triggered Boolean        @default(false)
+  createdAt DateTime       @default(now())
+  pokemon   Pokemon        @relation(fields: [pokemonId], references: [id])
+  user      User           @relation(fields: [userId], references: [id])
+}
+
+model Post {
+  id        String    @id @default(uuid())
+  userId    String
+  title     String
+  content   String
+  pokemonId String?
+  likes     Int       @default(0)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  comments  Comment[]
+  pokemon   Pokemon?  @relation(fields: [pokemonId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  postId    String
+  userId    String
+  content   String
+  createdAt DateTime @default(now())
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Follow {
+  id          String   @id @default(uuid())
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+  follower    User     @relation("Followers", fields: [followerId], references: [id])
+  following   User     @relation("Following", fields: [followingId], references: [id])
+
+  @@unique([followerId, followingId])
+}
+
+model Order {
+  id        String      @id @default(uuid())
+  userId    String
+  pokemonId String
+  type      OrderType
+  side      OrderSide
+  quantity  Int
+  price     Float
+  status    OrderStatus @default(OPEN)
+  expiresAt DateTime?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  pokemon   Pokemon     @relation(fields: [pokemonId], references: [id])
+  user      User        @relation(fields: [userId], references: [id])
+}
+
+model PokemonAttributes {
+  id         String   @id @default(uuid())
+  pokemonId  String   @unique
+  rarity     String
+  generation Int
+  abilities  String[]
+  stats      Json
+  pokemon    Pokemon  @relation(fields: [pokemonId], references: [id])
+}
+
+model MarketStatistics {
+  id          String   @id @default(uuid())
+  date        DateTime @unique @default(now())
+  totalVolume Int      @default(0)
+  topTraded   Json
+  priceIndex  Float
 }
 
 enum TradeStatus {
@@ -66,34 +226,26 @@ enum TradeStatus {
   CANCELLED
 }
 
-model Transaction {
-  id         String    @id @default(uuid())
-  tradeId    String    @unique
-  senderId   String
-  receiverId String
-  amount     Float
-  timestamp  DateTime  @default(now())
-  trade      Trade     @relation(fields: [tradeId], references: [id])
-  sender     User      @relation("SentTransactions", fields: [senderId], references: [id])
-  receiver   User      @relation("ReceivedTransactions", fields: [receiverId], references: [id])
-  portfolio  Portfolio? @relation(fields: [portfolioId], references: [id], onDelete: SetNull)
-  portfolioId String?
+enum AlertCondition {
+  ABOVE
+  BELOW
+  EQUAL
 }
 
-model Portfolio {
-  id          String    @id @default(uuid())
-  userId      String    @unique
-  totalValue  Float     @default(0.0)
-  pokemons    Pokemon[]
-  transactions Transaction[]
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  updatedAt   DateTime  @updatedAt
+enum OrderType {
+  MARKET
+  LIMIT
+  STOP
 }
 
-model Wishlist {
-  id         String    @id @default(uuid())
-  userId     String    @unique
-  pokemons   Pokemon[]
-  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt  DateTime  @default(now())
+enum OrderSide {
+  BUY
+  SELL
+}
+
+enum OrderStatus {
+  OPEN
+  FILLED
+  CANCELLED
+  EXPIRED
 }

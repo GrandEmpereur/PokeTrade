@@ -1,12 +1,16 @@
 'use client';
 
-import { BarChart2 } from 'lucide-react';
+import { BarChart2, User } from 'lucide-react';
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
-import { Button } from './ui/button';
+import { Button } from '@/components/ui/button';
+import { authService, type UserInfo } from '@/services/auth.service';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export default function NavBar() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [user, setUser] = useState<UserInfo | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -14,6 +18,19 @@ export default function NavBar() {
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      setIsLoading(true);
+      const { success, data } = await authService.getUser();
+      if (success && data) {
+        setUser(data);
+      }
+      setIsLoading(false);
+    };
+
+    fetchUser();
   }, []);
 
   return (
@@ -60,19 +77,33 @@ export default function NavBar() {
               Pricing
             </Link>
           </nav>
-          <div className="flex items-center gap-3">
-            <Link
-              href="/login"
-              className="text-sm font-medium text-white transition-colors hover:text-gray-300"
-            >
-              Login
+
+          {isLoading ? (
+            <div className="h-8 w-16 animate-pulse rounded-full bg-gray-600" />
+          ) : user ? (
+            <Link href="/dashboard">
+              <Avatar className="h-8 w-8 border border-white/20 hover:ring-2 hover:ring-emerald-500 transition-all">
+                <AvatarImage src={user.avatar || ''} alt={user.username} />
+                <AvatarFallback className="bg-emerald-500 text-xs">
+                  {user.username?.substring(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
             </Link>
-            <Link href="/register">
-              <Button className="bg-white text-black hover:bg-gray-200 h-8 px-3 py-1 text-xs rounded-full">
-                Sign up
-              </Button>
-            </Link>
-          </div>
+          ) : (
+            <div className="flex items-center gap-3">
+              <Link
+                href="/login"
+                className="text-sm font-medium text-white transition-colors hover:text-gray-300"
+              >
+                Login
+              </Link>
+              <Link href="/register">
+                <Button className="bg-white text-black hover:bg-gray-200 h-8 px-3 py-1 text-xs rounded-full">
+                  Sign up
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </header>

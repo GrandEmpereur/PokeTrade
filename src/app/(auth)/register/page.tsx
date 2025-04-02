@@ -6,11 +6,10 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@/lib/utils';
 import {
-  registerFormSchema,
+  registerSchema,
   type RegisterFormValues,
-} from '@/validators/authSchema';
-import { registerUser } from '@/services/auth.service';
-import { createClient } from '@/utils/supabase/client';
+} from '@/validators/auth.validators';
+import { authService } from '@/services/auth.service';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -31,9 +30,9 @@ export default function RegisterForm() {
   const router = useRouter();
 
   const form = useForm<RegisterFormValues>({
-    resolver: zodResolver(registerFormSchema),
+    resolver: zodResolver(registerSchema),
     defaultValues: {
-      name: '',
+      full_name: '',
       email: '',
       password: '',
       confirmPassword: '',
@@ -41,23 +40,11 @@ export default function RegisterForm() {
   });
 
   async function signInWithGitHub() {
-    const supabase = createClient();
-    await supabase.auth.signInWithOAuth({
-      provider: 'github',
-      options: {
-        redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
-      },
-    });
+    await authService.signInWithGithub();
   }
 
   async function signInWithGoogle() {
-    const supabase = createClient();
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
-      },
-    });
+    await authService.signInWithGoogle();
   }
 
   async function onSubmit(values: RegisterFormValues) {
@@ -66,7 +53,7 @@ export default function RegisterForm() {
     setSuccess(false);
 
     try {
-      const result = await registerUser(values);
+      const result = await authService.createUser(values);
 
       if (result?.error) {
         setError(result.error);
@@ -109,7 +96,7 @@ export default function RegisterForm() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6">
           <FormField
             control={form.control}
-            name="name"
+            name="full_name"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Nom</FormLabel>

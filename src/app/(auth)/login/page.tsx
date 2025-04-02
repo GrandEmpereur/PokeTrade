@@ -5,8 +5,11 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@/lib/utils';
-import { loginFormSchema, type LoginFormValues } from '@/validators/authSchema';
-import { loginUser } from '@/services/auth.service';
+import {
+  loginSchema,
+  type LoginFormValues,
+} from '@/validators/auth.validators';
+import { authService, type UserCredentials } from '@/services/auth.service';
 import { createClient } from '@/utils/supabase/client';
 
 import { Button } from '@/components/ui/button';
@@ -29,7 +32,7 @@ export default function LoginForm() {
   const router = useRouter();
 
   const form = useForm<LoginFormValues>({
-    resolver: zodResolver(loginFormSchema),
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: '',
       password: '',
@@ -37,23 +40,11 @@ export default function LoginForm() {
   });
 
   async function signInWithGithub() {
-    const supabase = createClient();
-    await supabase.auth.signInWithOAuth({
-      provider: 'github',
-      options: {
-        redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
-      },
-    });
+    await authService.signInWithGithub();
   }
 
   async function signInWithGoogle() {
-    const supabase = createClient();
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
-      },
-    });
+    await authService.signInWithGoogle();
   }
 
   async function onSubmit(values: LoginFormValues) {
@@ -62,7 +53,7 @@ export default function LoginForm() {
     setSuccess(false);
 
     try {
-      const result = await loginUser(values);
+      const result = await authService.signIn(values);
 
       if (result?.error) {
         setError(result.error);

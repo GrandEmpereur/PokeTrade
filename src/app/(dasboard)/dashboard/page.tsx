@@ -1,51 +1,30 @@
-'use client'
+import { AppSidebar } from '@/components/app-sidebar';
+import { ChartAreaInteractive } from '@/components/chart-area-interactive';
+import { DataTable } from '@/components/data-table';
+import { SectionCards } from '@/components/section-cards';
+import { SiteHeader } from '@/components/site-header';
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 
-import { signOut } from '@/services/auth.service'
-import { getUser, SupabaseUserData, User } from '@/services/user.service'
-import { Button } from '@/components/ui/button'
-import { useState, useEffect } from 'react'
-import { redirect } from 'next/navigation'
+import data from './data.json';
 
-export default function PrivatePage() {
-  const [user, setUser] = useState<SupabaseUserData | null>(null)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const response = await getUser()
-      console.log(response)
-      
-      if ('error' in response) {
-        setError(response.error)
-        return
-      }
-
-      setUser(response)
-    }
-    fetchUser()
-  }, [])
-
-  async function handleLogout() {
-    await signOut()
-    redirect('/login')
-  }
-
-  if (error) {
-    return (
-      <div className='flex flex-col items-center justify-center h-screen'>
-        <p className='text-2xl font-bold text-red-500'>Erreur: {error}</p>
-      </div>
-    )
-  }
-
+export default function Page() {
   return (
-    <div className='flex flex-col items-center justify-center h-screen'>
-      <p className='text-2xl font-bold text-black pt-22'>
-        Bonjour {user?.user.user_metadata.name}
-      </p>
-      <Button variant='outline' onClick={handleLogout}>
-        <p>Déconnexion</p>
-      </Button>
-    </div>
-  ) 
+    <SidebarProvider>
+      <AppSidebar variant="inset" />
+      <SidebarInset>
+        <SiteHeader />
+        <div className="flex flex-1 flex-col">
+          <div className="@container/main flex flex-1 flex-col gap-2">
+            <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+              <SectionCards />
+              <div className="px-4 lg:px-6">
+                <ChartAreaInteractive />
+              </div>
+              <DataTable data={data} />
+            </div>
+          </div>
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
+  );
 }

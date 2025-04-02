@@ -125,6 +125,12 @@ This project follows SOLID principles:
 
 ---
 
+## 🧱 UML Architecture
+
+<p align="center">
+  <img src="./public/assets/images/readme/UML.png" width="1000" height="1000" alt="Logo" />
+</p>
+
 ## 🔍 Conventional Commits
 
 This project follows the **Conventional Commits** standard to maintain a consistent commit message format. Commit
