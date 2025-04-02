@@ -1,98 +1,84 @@
-import React from 'react';
+'use client';
+
+import { BarChart2 } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
+import React, { useState, useEffect } from 'react';
+import { Button } from './ui/button';
 
-function NavBar() {
+export default function NavBar() {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/10 backdrop-blur-md border-b border-white/10">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center">
-            <Image
-              src="/assets/images/readme/logo2.png"
-              alt="PokeTrade Logo"
-              width={100}
-              height={100}
-              className="mr-2"
-            />
-            <span className="text-xl font-bold text-white">PokeTrade</span>
-          </Link>
-
-          {/* Navigation Links */}
-          <div className="hidden md:flex items-center space-x-8">
-            <Link 
-              href="/" 
-              className="text-white/90 hover:text-white transition-colors"
-            >
-              Accueil
-            </Link>
-            <Link 
-              href="/products" 
-              className="text-white/90 hover:text-white transition-colors"
-            >
-              Produits
-            </Link>
+    <header className="fixed top-0 z-50 w-full flex justify-center p-4">
+      <div
+        className={`w-1/2 rounded-full bg-black/50 backdrop-blur-md border-b border-neutral-800 transition-all duration-300 ${
+          isScrolled ? 'py-2' : 'py-3'
+        }`}
+      >
+        <div className="flex h-10 items-center justify-between px-6 mx-auto">
+          <div className="flex items-center gap-2">
+            <BarChart2 className="h-5 w-5 text-emerald-500" />
+            <span className="text-lg font-bold text-white">PokéTrade</span>
           </div>
-
-          {/* Right Section */}
-          <div className="flex items-center space-x-4">
-            {/* Language Selector */}
-            <Select defaultValue="fr">
-              <SelectTrigger className="w-[100px] bg-white/10 border-white/20 text-white">
-                <SelectValue placeholder="Langue" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="fr">FR</SelectItem>
-                <SelectItem value="en">EN</SelectItem>
-              </SelectContent>
-            </Select>
-
-            {/* Auth Buttons */}
-            <div className="hidden md:flex items-center space-x-2">
-              <Link href="/login">
-                <Button variant="ghost" className="text-white hover:text-white hover:bg-white/10">
-                  Connexion
-                </Button>
-              </Link>
-              <Link href="/register">
-                <Button className="bg-white text-primary hover:bg-white/90">
-                  Inscription
-                </Button>
-              </Link>
-            </div>
-
-            {/* Mobile Menu Button */}
-            <button className="md:hidden text-white">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="3" y1="12" x2="21" y2="12"></line>
-                <line x1="3" y1="6" x2="21" y2="6"></line>
-                <line x1="3" y1="18" x2="21" y2="18"></line>
-              </svg>
-            </button>
+          <nav className="hidden md:flex gap-6">
+            <Link
+              href="#documentation"
+              className="text-sm font-medium text-gray-300 transition-colors hover:text-white"
+            >
+              Documentation
+            </Link>
+            <Link
+              href="#resources"
+              className="text-sm font-medium text-gray-300 transition-colors hover:text-white"
+            >
+              Resources
+            </Link>
+            <Link
+              href="#preview"
+              className="text-sm font-medium text-gray-300 transition-colors hover:text-white"
+            >
+              Request Preview
+            </Link>
+            <Link
+              href="#careers"
+              className="text-sm font-medium text-gray-300 transition-colors hover:text-white"
+            >
+              Careers
+            </Link>
+            <Link
+              href="#pricing"
+              className="text-sm font-medium text-gray-300 transition-colors hover:text-white"
+            >
+              Pricing
+            </Link>
+          </nav>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/login"
+              className="text-sm font-medium text-white transition-colors hover:text-gray-300"
+            >
+              Login
+            </Link>
+            <Button
+              variant="outline"
+              className="hidden md:flex border-neutral-700 bg-transparent text-white hover:bg-neutral-800 h-8 px-3 py-1 text-xs"
+            >
+              Get a demo
+            </Button>
+            <Button className="bg-white text-black hover:bg-gray-200 h-8 px-3 py-1 text-xs rounded-full">
+              Sign up
+            </Button>
           </div>
         </div>
       </div>
-    </nav>
+    </header>
   );
 }
-
-export default NavBar;

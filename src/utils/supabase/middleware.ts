@@ -37,16 +37,14 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Liste des routes publiques
-  //exxclude /dashboard from public routes
-  const publicRoutes = ['/login', '/auth', '/register']
-  const isPublicRoute = publicRoutes.some(route =>
-    request.nextUrl.pathname.startsWith(route) && request.nextUrl.pathname !== '/dashboard'
-
-  )
-
-  // Si l'utilisateur n'est pas connecté et essaie d'accéder à une route protégée
-  if (!user && !isPublicRoute) {
+  if (
+    !user &&
+    !request.nextUrl.pathname.startsWith('/login') &&
+    !request.nextUrl.pathname.startsWith('/auth') &&
+    !request.nextUrl.pathname.startsWith('/register') &&
+    request.nextUrl.pathname !== '/'
+  ) {
+    // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
