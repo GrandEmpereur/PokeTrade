@@ -2,22 +2,11 @@
 
 import * as React from 'react';
 import {
-  ArrowUpCircleIcon,
-  BarChartIcon,
-  CameraIcon,
-  ClipboardListIcon,
   DatabaseIcon,
-  FileCodeIcon,
-  FileIcon,
-  FileTextIcon,
-  FolderIcon,
   GalleryVerticalEnd,
   HelpCircleIcon,
   LayoutDashboardIcon,
-  ListIcon,
-  SearchIcon,
   SettingsIcon,
-  UsersIcon,
   WalletIcon,
   TrendingUpIcon,
   ShoppingCartIcon,
@@ -25,12 +14,11 @@ import {
   PackageIcon,
   BadgePercentIcon,
   LineChartIcon,
-  GlobeIcon,
   MessageSquareIcon,
   BellIcon,
   HistoryIcon,
 } from 'lucide-react';
-import { getUser } from '@/services/auth.server';
+import { authService } from '@/services/auth.service';
 
 import { NavDocuments } from '@/components/nav-documents';
 import { NavMain } from '@/components/nav-main';
@@ -45,7 +33,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-
+import Link from 'next/link';
 const data = {
   navMain: [
     {
@@ -174,7 +162,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   React.useEffect(() => {
     const fetchUser = async () => {
       setIsLoading(true);
-      const result = await getUser();
+      const result = await authService.getUser();
+      console.log(result);
 
       if (result.success && result.data) {
         // Adapter le format pour correspondre à ce qu'attend NavUser
@@ -200,12 +189,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href="#">
+              <Link href="/dashboard">
                 <GalleryVerticalEnd className="h-5 w-5" />
                 <span className="text-base font-semibold">
                   Poke Trade Dashboard
                 </span>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

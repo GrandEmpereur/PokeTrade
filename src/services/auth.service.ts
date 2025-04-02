@@ -232,26 +232,48 @@ export class AuthService {
      * Connecte un utilisateur avec GitHub
      */
     async signInWithGithub() {
+        // Vérifier si on est dans un environnement navigateur
+        if (typeof window === 'undefined') {
+            throw new Error("Cette méthode ne peut être appelée que côté client.");
+        }
+
         const supabase = createClient();
-        await supabase.auth.signInWithOAuth({
+        const { data, error } = await supabase.auth.signInWithOAuth({
             provider: 'github',
             options: {
                 redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
             },
         });
+
+        if (error) {
+            throw error;
+        }
+
+        return { success: true, data };
     }
 
     /**
      * Connecte un utilisateur avec Google
      */
     async signInWithGoogle() {
+        // Vérifier si on est dans un environnement navigateur
+        if (typeof window === 'undefined') {
+            throw new Error("Cette méthode ne peut être appelée que côté client.");
+        }
+
         const supabase = createClient();
-        await supabase.auth.signInWithOAuth({
+        const { data, error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
                 redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
             },
         });
+
+        if (error) {
+            throw error;
+        }
+
+        return { success: true, data };
     }
 
     /**

@@ -9,11 +9,6 @@ import {
   registerSchema,
   type RegisterFormValues,
 } from '@/validators/auth.validators';
-import {
-  createUser,
-  signInWithGithub,
-  signInWithGoogle,
-} from '@/services/auth.server';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -26,6 +21,7 @@ import {
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { authService } from '@/services/auth.service';
 
 export default function RegisterForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -44,11 +40,11 @@ export default function RegisterForm() {
   });
 
   async function signInWithGitHub() {
-    await signInWithGithub();
+    await authService.signInWithGithub();
   }
 
   async function signInWithGoogle() {
-    await signInWithGoogle();
+    await authService.signInWithGoogle();
   }
 
   async function onSubmit(values: RegisterFormValues) {
@@ -57,7 +53,7 @@ export default function RegisterForm() {
     setSuccess(false);
 
     try {
-      const result = await createUser(values);
+      const result = await authService.createUser(values);
 
       if (result?.error) {
         setError(result.error);

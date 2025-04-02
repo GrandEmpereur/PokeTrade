@@ -24,7 +24,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { signOut } from '@/services/auth.server';
+import { authService } from '@/services/auth.service';
+import { toast } from 'sonner';
 
 export function NavUser({
   user,
@@ -39,8 +40,19 @@ export function NavUser({
   const { isMobile } = useSidebar();
 
   async function handleSignOut() {
-    await signOut();
-    window.location.href = '/login';
+    try {
+      const result = await authService.signOut();
+      if (result.success) {
+        window.location.href = '/login';
+      } else {
+        toast.error('Erreur lors de la déconnexion', {
+          description: result.error || 'Une erreur est survenue',
+        });
+      }
+    } catch (error) {
+      console.error('Erreur de déconnexion:', error);
+      toast.error('Erreur lors de la déconnexion');
+    }
   }
 
   return (
@@ -101,7 +113,7 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleSignOut}>
               <LogOutIcon />
               Log out
             </DropdownMenuItem>
