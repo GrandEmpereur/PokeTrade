@@ -6,9 +6,10 @@ export default async function PokemonsPage() {
   const pokemons = await pokeApi.getPokemonList();
 
   return (
-    <div className="max-w-lg mx-auto py-4">
+    <div className="py-4 px-4 w-full">
       <h1 className="text-xl font-bold mb-4">Liste des Pokémon</h1>
-      <ul className="grid grid-cols-2 gap-4">
+
+      <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {pokemons.map((pkm) => (
           <li
             key={pkm.id}
