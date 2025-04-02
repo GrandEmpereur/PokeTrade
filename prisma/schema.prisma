@@ -1,0 +1,179 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Post {
+  id        String   @id @default(uuid())
+  title     String
+  content   String?
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
+
+  @@map("posts")
+}
+
+model Product {
+  id        String   @id
+  name      String
+  price     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("products")
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  name          String?
+  username      String?   @unique
+  password      String?
+  image         String?
+  emailVerified DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  role          Role      @default(USER)
+
+  posts          Post[]
+  collections    Collection[]
+  cards          Card[]       @relation("CardOwner")
+  sentTrades     Trade[]      @relation("TradeInitiator")
+  receivedTrades Trade[]      @relation("TradeReceiver")
+  wishlist       Wishlist?
+
+  @@map("users")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Card {
+  id          String    @id @default(uuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  name        String
+  setName     String
+  setNumber   String
+  rarity      String
+  image       String
+  description String?
+  price       Float     @default(0)
+  condition   Condition @default(NEAR_MINT)
+  sellable    Boolean   @default(false)
+  tradable    Boolean   @default(false)
+
+  ownerId       String?
+  owner         User?          @relation("CardOwner", fields: [ownerId], references: [id])
+  collections   Collection[]   @relation("CollectionToCard")
+  offerItems    TradeItem[]    @relation("TradeItemCard")
+  wishlistItems WishlistItem[] @relation("WishlistItemCard")
+
+  @@map("cards")
+}
+
+enum Condition {
+  MINT
+  NEAR_MINT
+  EXCELLENT
+  GOOD
+  POOR
+}
+
+model Collection {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String
+  description String?
+  isPrivate   Boolean  @default(false)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cards  Card[] @relation("CollectionToCard")
+
+  @@map("collections")
+}
+
+model Trade {
+  id        String      @id @default(uuid())
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  status    TradeStatus @default(PENDING)
+  message   String?
+
+  initiatorId String
+  initiator   User        @relation("TradeInitiator", fields: [initiatorId], references: [id])
+  receiverId  String
+  receiver    User        @relation("TradeReceiver", fields: [receiverId], references: [id])
+  items       TradeItem[]
+
+  @@map("trades")
+}
+
+enum TradeStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELLED
+  COMPLETED
+}
+
+model TradeItem {
+  id        String         @id @default(uuid())
+  direction TradeDirection
+
+  tradeId String
+  trade   Trade  @relation(fields: [tradeId], references: [id], onDelete: Cascade)
+  cardId  String
+  card    Card   @relation("TradeItemCard", fields: [cardId], references: [id])
+
+  @@map("trade_items")
+}
+
+enum TradeDirection {
+  OFFER
+  REQUEST
+}
+
+model Wishlist {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String         @unique
+  user   User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items  WishlistItem[]
+
+  @@map("wishlists")
+}
+
+model WishlistItem {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  priority  Priority @default(MEDIUM)
+
+  wishlistId String
+  wishlist   Wishlist @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
+  cardId     String
+  card       Card     @relation("WishlistItemCard", fields: [cardId], references: [id])
+
+  @@map("wishlist_items")
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}

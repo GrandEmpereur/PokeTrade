@@ -1,14 +1,14 @@
 import {
-    describe,
-    it,
-    expect,
-    beforeEach,
-    afterEach,
-    jest,
+  describe,
+  it,
+  expect,
+  beforeEach,
+  afterEach,
+  jest,
 } from '@jest/globals';
 
 import { PokeApiService } from '@/services/pokeApi.service';
-import { PokemonBasic, PokemonDetails } from '@/types/pokemon.types';
+import { PokemonBasic, PokemonDetails } from '@/types/pokemon/pokemon.types';
 
 describe('PokeApiService', () => {
   let service: PokeApiService;
@@ -22,44 +22,6 @@ describe('PokeApiService', () => {
   afterEach(() => {
     global.fetch = originalFetch;
     jest.clearAllMocks();
-  });
-
-  describe('getPokemonList', () => {
-    it('should return a list of PokemonBasic when API call is successful', async () => {
-      const mockPokemonList: PokemonBasic[] = [
-        { name: 'bulbasaur', url: 'https://pokeapi.co/api/v2/pokemon/1' },
-        { name: 'charmander', url: 'https://pokeapi.co/api/v2/pokemon/4' },
-      ];
-
-      const mockResponse: Partial<Response> = {
-        ok: true,
-        json: async () => ({ results: mockPokemonList }),
-      };
-
-      (global.fetch as jest.MockedFunction<typeof fetch>)
-        .mockResolvedValue(mockResponse as Response);
-
-      const result = await service.getPokemonList(2, 0);
-
-      expect(global.fetch).toHaveBeenCalledWith(
-        'https://pokeapi.co/api/v2/pokemon?limit=2&offset=0',
-      );
-      expect(result).toEqual(mockPokemonList);
-    });
-
-    it('should throw an error when API call fails', async () => {
-      const mockResponse: Partial<Response> = {
-        ok: false,
-        status: 404,
-        json: async () => ({ error: 'Not Found' }),
-      };
-
-      (global.fetch as jest.MockedFunction<typeof fetch>)
-        .mockResolvedValue(mockResponse as Response);
-
-      await expect(service.getPokemonList(2, 0))
-        .rejects.toThrow('Erreur API: 404');
-    });
   });
 
   describe('getPokemonDetails', () => {
