@@ -225,6 +225,127 @@ GitHub Actions automatically runs tests:
 
 ---
 
+## 🔗 NFT Smart Contract Development and Integration
+
+# 1. Designing and Developing Smart Contracts to Accept Payments in the Form of NFTs
+
+**Main Contract: `PaymentNFT.sol`**
+
+- Allows a user to pay in Ether (`payAndMint()`) to receive an NFT.  
+- Emits a `NFTMinted(address indexed minter, uint256 indexed tokenId, uint256 amount)` event.  
+- Includes a `withdraw()` function enabling the owner to withdraw funds.
+
+### Progress
+
+**Current state**:  
+- The contract is developed in Solidity
+- It compiles successfully (Hardhat).  
+- Basic unit tests confirm NFT minting, amount verification, and fund withdrawal.
+
+**Note**:  
+- Utilizing OpenZeppelin ensures compliance with the ERC721 standard and applies best practices for Ownable management.
+- The `payAndMint()` method does not necessarily enforce a fixed amount (you are free to implement `require(msg.value == ...)` if needed).
+
+---
+
+# 2. Deployment on a Test Network and Preparing for the Main Network
+
+**Targeted Testnet**: Sepolia, via `hardhat.config.js`.
+
+**Configuration**:
+```js
+networks: {
+  sepolia: {
+    url: process.env.SEPOLIA_RPC_URL,
+    accounts: [process.env.PRIVATE_KEY]
+  },
+}
+```
+Deployment script: ```scripts/deploy.js```
+
+### Progress
+**Current state**:  
+
+- The Hardhat configuration (```hardhat.config.js```) is ready.
+- Unit tests (locally) pass successfully.
+- Missing: test ETH (Sepolia ETH) to actually deploy on the test network.
+
+**Next steps**:
+
+1. Obtain test ETH via a faucet (e.g., [sepoliafaucet.com](https://sepoliafaucet.com) or [faucetlink.to/sepolia](https://faucetlink.to/sepolia)).
+
+2. Run the command:
+```bash
+npx hardhat run scripts/deploy.js --network sepolia
+```
+3. Check the contract address on an explorer (e.g., [sepolia.etherscan.io](https://sepolia.etherscan.io)).
+
+**Mainnet migration**:
+
+- Same logic, adding a ```mainnet``` block in ```hardhat.config.js``` and providing real ETH.
+- Do this after final validation (tests, audit, etc.).
+
+# 3. Integration with the Supabase Back End
+
+**Objective**:
+
+- Listen for the ```NFTMinted``` event from the contract to link the NFT transaction to a user profile 
+- Insert into a table: the minter’s address, the tokenId, the transaction, etc.
+
+### Progress
+**Current state**:  
+
+- The event-listening logic (```contract.on("NFTMinted", ...)```) has been explained but not yet implemented in the existing code.
+- We have an example of inserting data into Supabase (```supabase.from("...").insert([...])```).
+
+**Next steps**:
+
+1. Create or adapt a script (Node/Next.js) that listens to the blockchain (Ethers.js) via a provider (Sepolia).
+2. Insert data into the Supabase database.
+3. Implement front-end or back-end display to show minted NFTs.
+
+# 4. Implementation of Unit and Integration Tests (Security and Robustness)
+
+**Unit Tests**:
+
+- Implemented in test/PaymentNFT.test.js.
+- Verify ```payAndMint()```, ```withdraw()```, and revert if ```msg.value == 0```.
+- Run successfully on local Hardhat.
+
+**Integration Tests**:
+
+- **Locally**: A "simplified" test checks if the owner can retrieve funds (contract balance = 0, owner balance increases).
+- **Next steps**: test real integration with Supabase (event listening).
+- **Optionally**: test on **Sepolia** for more realistic behavior.
+
+# 5. Documentation of the Architecture and Workflow
+##### 1. Smart Contracts (Solidity)
+
+- ✅ `PaymentNFT` contract developed, handles minting an NFT in exchange for payment.
+- ✅ Hardhat unit tests to verify basic logic (payment/mint, withdrawal).
+
+##### 2. Testnet Deployment
+
+- ❌ Obtain test ETH on **Sepolia**.
+- ❌ Deploy via Hardhat (`scripts/deploy.js`).
+- ❌ Verify the address and code on Etherscan.
+
+##### 3. Supabase Integration
+
+- ❌ Create a listener script (`contract.on("NFTMinted", ...)`), insert into DB.
+- ❌ Connect with the front-end (display minted NFT in **PokeTrade**).
+
+##### 4. Security & Audit
+
+- ❌ Check for reentrancy (if needed), correct use of **Ownable**, etc.
+- ❌ Optional: third-party audit before deploying to mainnet.
+
+##### 5. Documentation
+
+- ✅ Partial documentation exists (testing, configuration).
+- ❌ Finalize a more complete README or Wiki, include diagrams, testnet/mainnet deployment instructions.
+
+
 ## 🧩 Key Technologies
 
 | Technology | Usage                 |
