@@ -7,7 +7,7 @@ export default async function PokemonsPage() {
 
   return (
     <div className="py-4 px-4 w-full">
-      <h1 className="text-xl font-bold mb-4">Liste des Pokémon</h1>
+      <h1 className="text-xl font-bold mb-4">Pokemon List</h1>
 
       <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {pokemons.map((pkm) => (
