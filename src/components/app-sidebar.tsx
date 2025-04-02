@@ -163,7 +163,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const fetchUser = async () => {
       setIsLoading(true);
       const result = await authService.getUser();
-      console.log(result);
 
       if (result.success && result.data) {
         // Adapter le format pour correspondre à ce qu'attend NavUser
