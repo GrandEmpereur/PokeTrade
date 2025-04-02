@@ -53,11 +53,14 @@ export default async function PokemonDetailsPage(props: PokemonDetailsPageProps)
             </p>
 
             <h2 className="font-semibold mb-2">Types</h2>
-            <ul className="list-disc list-inside">
-              {pokemon.types.map((type) => (
-                <li key={type.type.name} className="capitalize">
-                  {type.type.name}
-                </li>
+            <ul className="flex gap-2 list-none p-0 m-0 justify-center">
+              {pokemon.types.map(({ type }) => (
+                <Card
+                  key={type.name}
+                  className="bg-white text-gray-700 px-4 py-1 rounded shadow-sm capitalize text-sm"
+                >
+                  {type.name}
+                </Card>
               ))}
             </ul>
           </div>
