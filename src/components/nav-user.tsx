@@ -24,20 +24,27 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
+import { signOut } from '@/services/auth.server';
 
 export function NavUser({
   user,
+  ...props
 }: {
   user: {
     name: string;
     email: string;
     avatar: string;
   };
-}) {
+} & React.ComponentProps<typeof SidebarMenu>) {
   const { isMobile } = useSidebar();
 
+  async function handleSignOut() {
+    await signOut();
+    window.location.href = '/login';
+  }
+
   return (
-    <SidebarMenu>
+    <SidebarMenu {...props}>
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

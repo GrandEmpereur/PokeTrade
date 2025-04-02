@@ -9,7 +9,11 @@ import {
   registerSchema,
   type RegisterFormValues,
 } from '@/validators/auth.validators';
-import { authService } from '@/services/auth.service';
+import {
+  createUser,
+  signInWithGithub,
+  signInWithGoogle,
+} from '@/services/auth.server';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -40,11 +44,11 @@ export default function RegisterForm() {
   });
 
   async function signInWithGitHub() {
-    await authService.signInWithGithub();
+    await signInWithGithub();
   }
 
   async function signInWithGoogle() {
-    await authService.signInWithGoogle();
+    await signInWithGoogle();
   }
 
   async function onSubmit(values: RegisterFormValues) {
@@ -53,7 +57,7 @@ export default function RegisterForm() {
     setSuccess(false);
 
     try {
-      const result = await authService.createUser(values);
+      const result = await createUser(values);
 
       if (result?.error) {
         setError(result.error);

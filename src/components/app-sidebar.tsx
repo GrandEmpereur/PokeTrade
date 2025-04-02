@@ -30,7 +30,7 @@ import {
   BellIcon,
   HistoryIcon,
 } from 'lucide-react';
-import { authService, type UserInfo } from '@/services/auth.service';
+import { getUser } from '@/services/auth.server';
 
 import { NavDocuments } from '@/components/nav-documents';
 import { NavMain } from '@/components/nav-main';
@@ -55,22 +55,22 @@ const data = {
     },
     {
       title: 'Ma Collection',
-      url: '/collection',
+      url: '/dashboard/collection',
       icon: PackageIcon,
     },
     {
       title: 'Marketplace',
-      url: '/marketplace',
+      url: '/dashboard/marketplace',
       icon: ShoppingCartIcon,
     },
     {
       title: 'Wishlist',
-      url: '/wishlist',
+      url: '/dashboard/wishlist',
       icon: HeartIcon,
     },
     {
       title: 'Analytics',
-      url: '/analytics',
+      url: '/dashboard/analytics',
       icon: LineChartIcon,
     },
   ],
@@ -125,39 +125,39 @@ const data = {
   navSecondary: [
     {
       title: 'Paramètres',
-      url: '/settings',
+      url: '/dashboard/settings',
       icon: SettingsIcon,
     },
     {
       title: 'Support',
-      url: '/support',
+      url: '/dashboard/support',
       icon: HelpCircleIcon,
     },
     {
       title: 'Communauté',
-      url: '/community',
+      url: '/dashboard/communaute',
       icon: MessageSquareIcon,
     },
   ],
   documents: [
     {
       name: 'Pokedex',
-      url: '/pokedex',
+      url: '/dashboard/pokedex',
       icon: DatabaseIcon,
     },
     {
       name: 'Tendances',
-      url: '/trends',
+      url: '/dashboard/tendances',
       icon: TrendingUpIcon,
     },
     {
       name: 'Notifications',
-      url: '/notifications',
+      url: '/dashboard/notifications',
       icon: BellIcon,
     },
     {
       name: 'Historique',
-      url: '/history',
+      url: '/dashboard/historique',
       icon: HistoryIcon,
     },
   ],
@@ -174,14 +174,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   React.useEffect(() => {
     const fetchUser = async () => {
       setIsLoading(true);
-      const { success, data } = await authService.getUser();
+      const result = await getUser();
 
-      if (success && data) {
+      if (result.success && result.data) {
         // Adapter le format pour correspondre à ce qu'attend NavUser
         setUser({
-          name: data.username,
-          email: data.email,
-          avatar: data.avatar || '/avatars/placeholder.jpg',
+          name: result.data.username,
+          email: result.data.email,
+          avatar: result.data.avatar || '/avatars/placeholder.jpg',
         });
       }
 

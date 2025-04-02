@@ -428,30 +428,31 @@ export class AuthService {
     }
 
     /**
-     * Met à jour les données de session de l'utilisateur dans Supabase
-     * @param data - Données à mettre à jour dans la session
+     * Met à jour les métadonnées de l'utilisateur actuel
+     * @param data - Métadonnées à mettre à jour
      */
-    async setSessionData(data: Record<string, any>): Promise<AuthResult<void>> {
+    async updateUserMetadata(data: Record<string, any>): Promise<AuthResult<UserInfo>> {
         try {
             const supabase = createClient()
-            const { error } = await supabase.auth.updateUser({
+            const { data: userData, error } = await supabase.auth.updateUser({
                 data,
             });
 
-            if (error) {
+            if (error || !userData?.user) {
                 return {
                     success: false,
-                    error: error.message,
+                    error: error?.message || "Erreur lors de la mise à jour des métadonnées",
                 };
             }
 
             return {
                 success: true,
+                data: this.mapUserToUserInfo(userData.user),
             };
         } catch (error: any) {
             return {
                 success: false,
-                error: error.message || "Erreur lors de la mise à jour des données de session",
+                error: error.message || "Erreur lors de la mise à jour des métadonnées",
             };
         }
     }

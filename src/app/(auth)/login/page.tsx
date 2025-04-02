@@ -9,6 +9,11 @@ import {
   loginSchema,
   type LoginFormValues,
 } from '@/validators/auth.validators';
+import {
+  signIn,
+  signInWithGithub as serverGithubSignIn,
+  signInWithGoogle as serverGoogleSignIn,
+} from '@/services/auth.server';
 import { authService, type UserCredentials } from '@/services/auth.service';
 
 import { Button } from '@/components/ui/button';
@@ -39,11 +44,11 @@ export default function LoginForm() {
   });
 
   async function signInWithGithub() {
-    await authService.signInWithGithub();
+    await serverGithubSignIn();
   }
 
   async function signInWithGoogle() {
-    await authService.signInWithGoogle();
+    await serverGoogleSignIn();
   }
 
   async function onSubmit(values: LoginFormValues) {
@@ -52,7 +57,7 @@ export default function LoginForm() {
     setSuccess(false);
 
     try {
-      const result = await authService.signIn(values);
+      const result = await signIn(values);
 
       if (result?.error) {
         setError(result.error);
