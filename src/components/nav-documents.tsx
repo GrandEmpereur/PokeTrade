@@ -25,18 +25,20 @@ import {
 
 export function NavDocuments({
   items,
+  title = 'Documents',
 }: {
   items: {
     name: string;
     url: string;
     icon: LucideIcon;
   }[];
+  title?: string;
 }) {
   const { isMobile } = useSidebar();
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>Documents</SidebarGroupLabel>
+      <SidebarGroupLabel>{title}</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <SidebarMenuItem key={item.name}>

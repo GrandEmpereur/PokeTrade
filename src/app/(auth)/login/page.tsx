@@ -10,7 +10,6 @@ import {
   type LoginFormValues,
 } from '@/validators/auth.validators';
 import { authService, type UserCredentials } from '@/services/auth.service';
-import { createClient } from '@/utils/supabase/client';
 
 import { Button } from '@/components/ui/button';
 import {

@@ -11,13 +11,26 @@ import {
   FileIcon,
   FileTextIcon,
   FolderIcon,
+  GalleryVerticalEnd,
   HelpCircleIcon,
   LayoutDashboardIcon,
   ListIcon,
   SearchIcon,
   SettingsIcon,
   UsersIcon,
+  WalletIcon,
+  TrendingUpIcon,
+  ShoppingCartIcon,
+  HeartIcon,
+  PackageIcon,
+  BadgePercentIcon,
+  LineChartIcon,
+  GlobeIcon,
+  MessageSquareIcon,
+  BellIcon,
+  HistoryIcon,
 } from 'lucide-react';
+import { authService, type UserInfo } from '@/services/auth.service';
 
 import { NavDocuments } from '@/components/nav-documents';
 import { NavMain } from '@/components/nav-main';
@@ -34,123 +47,150 @@ import {
 } from '@/components/ui/sidebar';
 
 const data = {
-  user: {
-    name: 'shadcn',
-    email: 'm@example.com',
-    avatar: '/avatars/shadcn.jpg',
-  },
   navMain: [
     {
       title: 'Dashboard',
-      url: '#',
+      url: '/dashboard',
       icon: LayoutDashboardIcon,
     },
     {
-      title: 'Lifecycle',
-      url: '#',
-      icon: ListIcon,
+      title: 'Ma Collection',
+      url: '/collection',
+      icon: PackageIcon,
+    },
+    {
+      title: 'Marketplace',
+      url: '/marketplace',
+      icon: ShoppingCartIcon,
+    },
+    {
+      title: 'Wishlist',
+      url: '/wishlist',
+      icon: HeartIcon,
     },
     {
       title: 'Analytics',
-      url: '#',
-      icon: BarChartIcon,
-    },
-    {
-      title: 'Projects',
-      url: '#',
-      icon: FolderIcon,
-    },
-    {
-      title: 'Team',
-      url: '#',
-      icon: UsersIcon,
+      url: '/analytics',
+      icon: LineChartIcon,
     },
   ],
-  navClouds: [
+  navWeb3: [
     {
-      title: 'Capture',
-      icon: CameraIcon,
+      title: 'Wallet',
+      icon: WalletIcon,
       isActive: true,
-      url: '#',
+      url: '/wallet',
       items: [
         {
-          title: 'Active Proposals',
-          url: '#',
+          title: 'Mes NFTs',
+          url: '/wallet/nfts',
         },
         {
-          title: 'Archived',
-          url: '#',
+          title: 'Transactions',
+          url: '/wallet/transactions',
         },
       ],
     },
     {
-      title: 'Proposal',
-      icon: FileTextIcon,
-      url: '#',
+      title: 'Trading',
+      icon: TrendingUpIcon,
+      url: '/trading',
       items: [
         {
-          title: 'Active Proposals',
-          url: '#',
+          title: 'Offres Actives',
+          url: '/trading/active',
         },
         {
-          title: 'Archived',
-          url: '#',
+          title: 'Historique',
+          url: '/trading/history',
         },
       ],
     },
     {
-      title: 'Prompts',
-      icon: FileCodeIcon,
-      url: '#',
+      title: 'Airdrops',
+      icon: BadgePercentIcon,
+      url: '/airdrops',
       items: [
         {
-          title: 'Active Proposals',
-          url: '#',
+          title: 'Promotions',
+          url: '/airdrops/promotions',
         },
         {
-          title: 'Archived',
-          url: '#',
+          title: 'Événements',
+          url: '/airdrops/events',
         },
       ],
     },
   ],
   navSecondary: [
     {
-      title: 'Settings',
-      url: '#',
+      title: 'Paramètres',
+      url: '/settings',
       icon: SettingsIcon,
     },
     {
-      title: 'Get Help',
-      url: '#',
+      title: 'Support',
+      url: '/support',
       icon: HelpCircleIcon,
     },
     {
-      title: 'Search',
-      url: '#',
-      icon: SearchIcon,
+      title: 'Communauté',
+      url: '/community',
+      icon: MessageSquareIcon,
     },
   ],
   documents: [
     {
-      name: 'Data Library',
-      url: '#',
+      name: 'Pokedex',
+      url: '/pokedex',
       icon: DatabaseIcon,
     },
     {
-      name: 'Reports',
-      url: '#',
-      icon: ClipboardListIcon,
+      name: 'Tendances',
+      url: '/trends',
+      icon: TrendingUpIcon,
     },
     {
-      name: 'Word Assistant',
-      url: '#',
-      icon: FileIcon,
+      name: 'Notifications',
+      url: '/notifications',
+      icon: BellIcon,
+    },
+    {
+      name: 'Historique',
+      url: '/history',
+      icon: HistoryIcon,
     },
   ],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const [user, setUser] = React.useState<{
+    name: string;
+    email: string;
+    avatar: string;
+  } | null>(null);
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const fetchUser = async () => {
+      setIsLoading(true);
+      const { success, data } = await authService.getUser();
+
+      if (success && data) {
+        // Adapter le format pour correspondre à ce qu'attend NavUser
+        setUser({
+          name: data.username,
+          email: data.email,
+          avatar: data.avatar || '/avatars/placeholder.jpg',
+        });
+      }
+
+      setIsLoading(false);
+    };
+
+    fetchUser();
+  }, []);
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -161,8 +201,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <a href="#">
-                <ArrowUpCircleIcon className="h-5 w-5" />
-                <span className="text-base font-semibold">Acme Inc.</span>
+                <GalleryVerticalEnd className="h-5 w-5" />
+                <span className="text-base font-semibold">
+                  Poke Trade Dashboard
+                </span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -170,11 +212,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
+        <NavMain title="Web3" items={data.navWeb3} />
+        <NavDocuments title="Ressources" items={data.documents} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        {!isLoading && user && <NavUser user={user} />}
       </SidebarFooter>
     </Sidebar>
   );
