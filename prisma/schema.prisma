@@ -8,172 +8,92 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-model Post {
-  id        String   @id @default(uuid())
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  authorId String
-  author   User   @relation(fields: [authorId], references: [id])
-
-  @@map("posts")
-}
-
-model Product {
-  id        String   @id
-  name      String
-  price     Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("products")
-}
-
 model User {
-  id            String    @id @default(uuid())
-  email         String    @unique
-  name          String?
-  username      String?   @unique
-  password      String?
-  image         String?
-  emailVerified DateTime?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  role          Role      @default(USER)
-
-  posts          Post[]
-  collections    Collection[]
-  cards          Card[]       @relation("CardOwner")
-  sentTrades     Trade[]      @relation("TradeInitiator")
-  receivedTrades Trade[]      @relation("TradeReceiver")
-  wishlist       Wishlist?
-
-  @@map("users")
+  id       String    @id @default(uuid())
+  username String    @unique
+  email    String    @unique
+  password String
+  pokemons Pokemon[]
+  tradesSent Trade[] @relation("SentTrades")
+  tradesReceived Trade[] @relation("ReceivedTrades")
+  transactionsSent Transaction[] @relation("SentTransactions")
+  transactionsReceived Transaction[] @relation("ReceivedTransactions")
+  portfolio Portfolio?
+  wishlist  Wishlist?
+  createdAt DateTime @default(now())
 }
 
-enum Role {
-  USER
-  ADMIN
-}
-
-model Card {
-  id          String    @id @default(uuid())
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  name        String
-  setName     String
-  setNumber   String
-  rarity      String
-  image       String
-  description String?
-  price       Float     @default(0)
-  condition   Condition @default(NEAR_MINT)
-  sellable    Boolean   @default(false)
-  tradable    Boolean   @default(false)
-
-  ownerId       String?
-  owner         User?          @relation("CardOwner", fields: [ownerId], references: [id])
-  collections   Collection[]   @relation("CollectionToCard")
-  offerItems    TradeItem[]    @relation("TradeItemCard")
-  wishlistItems WishlistItem[] @relation("WishlistItemCard")
-
-  @@map("cards")
-}
-
-enum Condition {
-  MINT
-  NEAR_MINT
-  EXCELLENT
-  GOOD
-  POOR
-}
-
-model Collection {
-  id          String   @id @default(uuid())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  name        String
-  description String?
-  isPrivate   Boolean  @default(false)
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  cards  Card[] @relation("CollectionToCard")
-
-  @@map("collections")
+model Pokemon {
+  id        String  @id @default(uuid())
+  name      String
+  type      String
+  level     Int     @default(1)
+  ownerId   String
+  owner     User    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  portfolio Portfolio? @relation(fields: [portfolioId], references: [id], onDelete: SetNull)
+  wishlist  Wishlist?  @relation(fields: [wishlistId], references: [id], onDelete: SetNull)
+  tradePokemons TradePokemon[]
+  portfolioId String?
+  wishlistId String?
+  createdAt DateTime @default(now())
 }
 
 model Trade {
-  id        String      @id @default(uuid())
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  status    TradeStatus @default(PENDING)
-  message   String?
+  id         String    @id @default(uuid())
+  senderId   String
+  receiverId String
+  status     TradeStatus @default(PENDING)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  sender     User      @relation("SentTrades", fields: [senderId], references: [id])
+  receiver   User      @relation("ReceivedTrades", fields: [receiverId], references: [id])
+  tradePokemons TradePokemon[]
+  transaction Transaction?
+}
 
-  initiatorId String
-  initiator   User        @relation("TradeInitiator", fields: [initiatorId], references: [id])
-  receiverId  String
-  receiver    User        @relation("TradeReceiver", fields: [receiverId], references: [id])
-  items       TradeItem[]
-
-  @@map("trades")
+model TradePokemon {
+  id         String  @id @default(uuid())
+  tradeId    String
+  pokemonId  String
+  trade      Trade   @relation(fields: [tradeId], references: [id], onDelete: Cascade)
+  pokemon    Pokemon @relation(fields: [pokemonId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
 }
 
 enum TradeStatus {
   PENDING
-  ACCEPTED
-  REJECTED
-  CANCELLED
   COMPLETED
+  CANCELLED
 }
 
-model TradeItem {
-  id        String         @id @default(uuid())
-  direction TradeDirection
-
-  tradeId String
-  trade   Trade  @relation(fields: [tradeId], references: [id], onDelete: Cascade)
-  cardId  String
-  card    Card   @relation("TradeItemCard", fields: [cardId], references: [id])
-
-  @@map("trade_items")
+model Transaction {
+  id         String    @id @default(uuid())
+  tradeId    String    @unique
+  senderId   String
+  receiverId String
+  amount     Float
+  timestamp  DateTime  @default(now())
+  trade      Trade     @relation(fields: [tradeId], references: [id])
+  sender     User      @relation("SentTransactions", fields: [senderId], references: [id])
+  receiver   User      @relation("ReceivedTransactions", fields: [receiverId], references: [id])
+  portfolio  Portfolio? @relation(fields: [portfolioId], references: [id], onDelete: SetNull)
+  portfolioId String?
 }
 
-enum TradeDirection {
-  OFFER
-  REQUEST
+model Portfolio {
+  id          String    @id @default(uuid())
+  userId      String    @unique
+  totalValue  Float     @default(0.0)
+  pokemons    Pokemon[]
+  transactions Transaction[]
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  updatedAt   DateTime  @updatedAt
 }
 
 model Wishlist {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  userId String         @unique
-  user   User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  items  WishlistItem[]
-
-  @@map("wishlists")
-}
-
-model WishlistItem {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  priority  Priority @default(MEDIUM)
-
-  wishlistId String
-  wishlist   Wishlist @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
-  cardId     String
-  card       Card     @relation("WishlistItemCard", fields: [cardId], references: [id])
-
-  @@map("wishlist_items")
-}
-
-enum Priority {
-  LOW
-  MEDIUM
-  HIGH
+  id         String    @id @default(uuid())
+  userId     String    @unique
+  pokemons   Pokemon[]
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime  @default(now())
 }
