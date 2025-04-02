@@ -1,6 +1,8 @@
 import { PokeApiService } from "@/services/pokeApi.service";
 import Image from "next/image";
+import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { mapPokemonType } from "@/mappers/pokemon/mapPokemonType";
 
 interface PokemonDetailsPageProps {
@@ -19,6 +21,14 @@ export default async function PokemonDetailsPage(props: PokemonDetailsPageProps)
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-6">
+      <div className="mb-4 self-start ml-4">
+        <Link href="/pokemons">
+          <Button variant="ghost">
+            ← Retour
+          </Button>
+        </Link>
+      </div>
+
       <Card type={mainType} className="w-full max-w-sm flex flex-col items-center">
         <CardHeader className="flex flex-col items-center text-center">
           <CardTitle className="text-2xl font-bold mb-2 capitalize">
