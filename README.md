@@ -2,66 +2,109 @@
   <img src="./public/assets/images/readme/logo2.png" width="450" height="450" alt="Logo" />
 </p>
 
-## 🧠 Architecture du projet
+# 🏆 PokeTrade
+
+**PokeTrade** is a Pokémon trading platform inspired by TradingView. Pokémon prices fluctuate in a simulated market
+where users can buy, sell, and track price trends just like real traders.
+
+---
+
+## 🏗️ Project Architecture
 
 ```
 
 ```
 
-# 🧪 PokeTrade
+## 🚀 Tech Stack
 
-**PokeTrade** est une plateforme de Pokémon trading inspirée de TradingView. Les prix des Pokémon évoluent dans un marché simulé. Les utilisateurs peuvent acheter, vendre et suivre les fluctuations comme de vrais traders.
-
----
-
-## 🚀 Stack Technique
-
-- **Framework** : [Next.js 15 (App Router)](https://nextjs.org)
-- **Backend-as-a-Service** : [Supabase](https://supabase.com)
-- **Base de données** : PostgreSQL (via Supabase)
-- **UI/UX** : Tailwind CSS, shadcn/ui
-- **Form validation** : Zod
-- **Tests** : Jest, Cypress
-- **CI/CD** : GitHub Actions
-- **Paiement** : Stripe
+- **Framework**: [Next.js 15 (App Router)](https://nextjs.org)
+- **Backend-as-a-Service**: [Supabase](https://supabase.com)
+- **Database**: PostgreSQL (via Supabase)
+- **UI/UX**: Tailwind CSS, shadcn/ui
+- **Form Validation**: Zod
+- **Testing**: Jest, Cypress
+- **CI/CD**: GitHub Actions
+- **Payments**: Stripe
 
 ---
 
-## 🎯 Fonctionnalités
+## 🎯 Features
 
-- 🔐 Authentification Supabase
-- 📈 Graphiques de prix pour chaque Pokémon
-- 🛒 Système de trading (achat, vente)
-- 💳 Paiement d’abonnement avec Stripe
-- 💼 Portefeuille utilisateur
-- 📊 Historique des transactions
-- ✅ UI responsive & stylée
+- 🔐 Supabase Authentication
+- 📈 Price charts for each Pokémon
+- 🛒 Trading system (buy/sell)
+- 💳 Subscription payments via Stripe
+- 💼 User portfolio management
+- 📊 Transaction history
+- ✅ Responsive & stylish UI
 
 ---
 
-## 🧱 Architecture SOLID
+## 🧱 SOLID Architecture
 
-Le projet suit les principes SOLID :
+This project follows SOLID principles:
 
-- **S** : Domaines séparés dans `/core/domain`
-- **O** : Entités extensibles avec Zod
-- **L** : Interfaces clairement définies pour les services
-- **I** : Interfaces spécifiques aux fonctionnalités
-- **D** : Les dépendances sont injectées dans les cas d’usage
+- **S**: Separate domains in `/core/domain`
+- **O**: Extendable entities using Zod
+- **L**: Clearly defined interfaces for services
+- **I**: Interfaces specific to each feature
+- **D**: Dependency injection for use cases
+
+---
+
+## 🔍 Conventional Commits
+
+This project follows the **Conventional Commits** standard to maintain a consistent commit message format. Commit
+messages must follow this structure:
+
+```
+<type>(<scope>): <subject>
+```
+
+### Commit Message Structure
+
+- **type**: Describes the type of change (e.g., `feat`, `fix`, `docs`)
+- **scope**: Specifies the affected area (e.g., `auth`, `build`)
+- **subject**: A concise description of the change
+
+### Allowed Types
+
+| Type     | Description                                 |
+|----------|---------------------------------------------|
+| feat     | A new feature                               |
+| fix      | A bug fix                                   |
+| docs     | Documentation updates                       |
+| style    | Code formatting (no logic changes)          |
+| refactor | Code restructuring without behavior changes |
+| perf     | Performance improvements                    |
+| test     | Adding or updating tests                    |
+| chore    | Build process or auxiliary tool changes     |
+| ci       | CI configuration changes                    |
+| build    | Build system updates                        |
+| revert   | Reverting a previous commit                 |
+
+### Examples
+
+- `feat(auth): Add login functionality`
+- `fix(api): Resolve timeout issue`
+- `docs(readme): Update setup instructions`
+- `chore(deps): Update dependency versions`
+- `style(button): Adjust padding for better alignment`
+
+Commit messages that do not follow this format will be rejected to ensure a clean, readable history.
 
 ---
 
 ## 🛠️ Installation
 
 ```bash
-git clone https://github.com/ton-compte/poketrade.git
+git clone https://github.com/your-username/poketrade.git
 cd poketrade
 npm install
-cp .env.example
-rename .env copy.example to .env.local
+cp .env.example .env.local
 ```
 
-Configure `.env.local` :
+Configure `.env.local`:
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=''
@@ -70,7 +113,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=''
 
 ---
 
-## 🔎 Lancer le projet
+## 🚀 Running the Project
 
 ```bash
 npm run dev
@@ -78,15 +121,15 @@ npm run dev
 
 ---
 
-## ✅ Tests
+## ✅ Testing
 
-### Jest (unitaires)
+### Jest (Unit Tests)
 
 ```bash
 npm run test
 ```
 
-### Cypress (end-to-end)
+### Cypress (End-to-End Tests)
 
 ```bash
 npx cypress open
@@ -94,37 +137,37 @@ npx cypress open
 
 ---
 
-## 🧪 CI/CD
+## 🔄 CI/CD
 
-Les tests sont lancés automatiquement via GitHub Actions :
+GitHub Actions automatically runs tests:
 
-- Lint + Jest à chaque `push`
-- Déploiement via Vercel ou autre selon config
-
----
-
-## 🧩 Technologies clés
-
-| Tech      | Utilisation              |
-| --------- | ------------------------ |
-| Next.js   | App router, SSR/ISR      |
-| Supabase  | Auth, DB, Realtime       |
-| Stripe    | Paiement des abonnements |
-| Zod       | Schémas et validation    |
-| Jest      | Tests unitaires          |
-| Cypress   | Tests E2E                |
-| Tailwind  | Design système CSS       |
-| shadcn/ui | Composants UI            |
+- Linting + Jest on each `push`
+- Deployment via Vercel (or another platform, depending on configuration)
 
 ---
 
-## 🧠 Contributeurs
+## 🧩 Key Technologies
 
-- [Ton Nom](https://github.com/ton-github)
-- Tu peux apparaître ici ! 😉
+| Technology | Usage                 |
+|------------|-----------------------|
+| Next.js    | App router, SSR/ISR   |
+| Supabase   | Auth, DB, Realtime    |
+| Stripe     | Subscription payments |
+| Zod        | Schema validation     |
+| Jest       | Unit testing          |
+| Cypress    | End-to-end testing    |
+| Tailwind   | CSS design system     |
+| shadcn/ui  | UI components         |
 
 ---
 
-## 📜 Licence
+## 👥 Contributors
+
+- [Your Name](https://github.com/your-github)
+- You can be listed here too! 😉
+
+---
+
+## 📜 License
 
 MIT
