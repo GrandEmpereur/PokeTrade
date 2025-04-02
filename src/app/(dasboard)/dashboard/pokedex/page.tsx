@@ -34,6 +34,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import Link from 'next/link';
 
 // Obtenir les couleurs pour les badges de type - Déplacer cette fonction au niveau global
 const getTypeBadgeStyles = (type: string) => {
@@ -174,18 +175,23 @@ function PokemonCard({ pokemon }: { pokemon: PokemonWithGeneration }) {
   const formattedName =
     pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1);
 
+  // Créer un slug URL à partir du nom du Pokémon
+  const pokemonSlug = pokemon.name.toLowerCase().replace(/\s+/g, '-');
+
   return (
     <div className="rounded-lg border bg-card shadow-sm p-3">
-      <div className="mb-2 aspect-square w-full overflow-hidden rounded-md bg-muted relative">
-        <div className={`h-full w-full ${getTypeColor(pokemon.types[0])}`} />
-        <Image
-          src={pokemon.imageUrl || pokemon.sprite}
-          alt={formattedName}
-          fill
-          className="object-contain p-1"
-          priority
-        />
-      </div>
+      <Link href={`/dashboard/pokedex/${pokemonSlug}`}>
+        <div className="mb-2 aspect-square w-full overflow-hidden rounded-md bg-muted relative">
+          <div className={`h-full w-full ${getTypeColor(pokemon.types[0])}`} />
+          <Image
+            src={pokemon.imageUrl || pokemon.sprite}
+            alt={formattedName}
+            fill
+            className="object-contain p-1"
+            priority
+          />
+        </div>
+      </Link>
       <div className="flex flex-wrap items-center justify-between gap-1 mb-1">
         <h3 className="text-sm font-semibold">{formattedName}</h3>
         <div className="flex flex-wrap gap-1">
@@ -208,9 +214,11 @@ function PokemonCard({ pokemon }: { pokemon: PokemonWithGeneration }) {
           <span>Gen {pokemon.generation}</span>
         </div>
       </div>
-      <Button className="mt-2 w-full h-7 text-xs" size="sm">
-        Détails
-      </Button>
+      <Link href={`/dashboard/pokedex/${pokemonSlug}`} className="w-full block">
+        <Button className="mt-2 w-full h-7 text-xs" size="sm">
+          Détails
+        </Button>
+      </Link>
     </div>
   );
 }

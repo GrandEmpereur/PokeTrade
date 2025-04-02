@@ -1,7 +1,7 @@
 'use server';
 
 import { pokeApiService } from './pokeApi.service';
-import { PokemonWithGeneration } from '@/types/pokemon/pokemon.types';
+import { PokemonWithGeneration, PokemonDetails, PokemonListResponse } from '@/types/pokemon/pokemon.types';
 
 type ApiResponse<T> = {
     success: boolean;
@@ -10,15 +10,90 @@ type ApiResponse<T> = {
 };
 
 /**
- * Récupère une liste paginée de Pokémon
+ * URL de base de l'API PokeAPI
  */
-export async function getPokemonList(limit = 20, offset = 0) {
+const API_BASE_URL = 'https://pokeapi.co/api/v2';
+
+/**
+ * Récupère une liste de Pokémon
+ */
+export async function getPokemonList(
+    limit: number = 20,
+    offset: number = 0
+): Promise<PokemonListResponse | null> {
     try {
-        const pokemons = await pokeApiService.getPokemonList(limit, offset);
-        return { success: true, data: pokemons };
-    } catch (error: any) {
-        console.error('Erreur lors de la récupération des pokémon:', error);
-        return { success: false, error: error.message || 'Échec de la récupération des pokémon' };
+        const response = await fetch(
+            `${API_BASE_URL}/pokemon?limit=${limit}&offset=${offset}`
+        );
+
+        if (!response.ok) {
+            throw new Error(`Erreur de récupération des données: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data as PokemonListResponse;
+    } catch (error) {
+        console.error('Erreur lors de la récupération de la liste des Pokémon:', error);
+        return null;
+    }
+}
+
+/**
+ * Récupère les détails d'un Pokémon par son nom ou ID
+ */
+export async function getPokemonByName(
+    nameOrId: string
+): Promise<PokemonDetails | null> {
+    try {
+        // Normaliser le nom pour l'API (en minuscules sans espaces)
+        const normalizedNameOrId = nameOrId.toLowerCase().trim();
+
+        const response = await fetch(`${API_BASE_URL}/pokemon/${normalizedNameOrId}`);
+
+        if (!response.ok) {
+            throw new Error(`Erreur de récupération des données: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data as PokemonDetails;
+    } catch (error) {
+        console.error(`Erreur lors de la récupération du Pokémon ${nameOrId}:`, error);
+        return null;
+    }
+}
+
+/**
+ * Recherche des Pokémon par nom partiel
+ */
+export async function searchPokemon(
+    query: string,
+    limit: number = 20
+): Promise<PokemonDetails[]> {
+    try {
+        // D'abord, récupérer une liste plus large
+        const pokemonList = await getPokemonList(100);
+
+        if (!pokemonList) {
+            return [];
+        }
+
+        // Filtrer par nom qui contient la requête
+        const filteredResults = pokemonList.results.filter(pokemon =>
+            pokemon.name.includes(query.toLowerCase())
+        ).slice(0, limit);
+
+        // Récupérer les détails pour chaque Pokémon filtré
+        const detailsPromises = filteredResults.map(pokemon =>
+            getPokemonByName(pokemon.name)
+        );
+
+        const pokemonDetails = await Promise.all(detailsPromises);
+
+        // Filtrer les résultats null
+        return pokemonDetails.filter(pokemon => pokemon !== null) as PokemonDetails[];
+    } catch (error) {
+        console.error('Erreur lors de la recherche de Pokémon:', error);
+        return [];
     }
 }
 
@@ -32,6 +107,22 @@ export async function getPokemonDetails(nameOrId: string | number) {
     } catch (error: any) {
         console.error(`Erreur lors de la récupération du pokémon ${nameOrId}:`, error);
         return { success: false, error: error.message || 'Échec de la récupération du pokémon' };
+    }
+}
+
+/**
+ * Récupère les détails d'un Pokémon spécifique par son ID
+ */
+export async function getPokemonById(id: number): Promise<PokemonDetails | null> {
+    try {
+        const response = await getPokemonDetails(id);
+        if (response.success && response.data) {
+            return response.data;
+        }
+        return null;
+    } catch (error: any) {
+        console.error(`Erreur lors de la récupération du pokémon par ID ${id}:`, error);
+        return null;
     }
 }
 

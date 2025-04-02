@@ -5,22 +5,62 @@ export interface PokemonBasic {
   sprite: string
 }
 
+// Types pour l'API Pokemon
+
+export interface NamedAPIResource {
+  name: string;
+  url: string;
+}
+
+export interface PokemonSprites {
+  front_default: string;
+  back_default: string;
+  front_shiny?: string;
+  back_shiny?: string;
+  other?: {
+    "official-artwork"?: {
+      front_default: string;
+    };
+    home?: {
+      front_default: string;
+    }
+  };
+}
+
+export interface PokemonType {
+  slot: number;
+  type: NamedAPIResource;
+}
+
+export interface PokemonStat {
+  base_stat: number;
+  effort: number;
+  stat: NamedAPIResource;
+}
+
+export interface PokemonAbility {
+  ability: NamedAPIResource;
+  is_hidden: boolean;
+  slot: number;
+}
 
 export interface PokemonDetails {
   id: number;
   name: string;
-  sprites: {
-    front_default: string;
-    other?: {
-      'official-artwork'?: {
-        front_default: string;
-      }
-    }
-  };
-  types: { type: { name: string } }[];
-  base_experience: number;
   height: number;
   weight: number;
+  base_experience: number;
+  sprites: PokemonSprites;
+  types: PokemonType[];
+  stats: PokemonStat[];
+  abilities: PokemonAbility[];
+}
+
+export interface PokemonListResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: NamedAPIResource[];
 }
 
 export interface PokemonWithGeneration extends PokemonBasic {

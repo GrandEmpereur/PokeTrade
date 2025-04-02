@@ -21,8 +21,15 @@ const config: Config = {
   ],
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
 
-  // Add more setup options before each test is run
-  //setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  // Transformer configuration pour les modules ES
+  transform: {
+    '^.+\\.(ts|tsx|js|jsx)$': ['babel-jest', { configFile: './babel.config.test.js' }],
+  },
+
+  // Ne pas ignorer les node_modules pour chai et d'autres packages utilisant ES modules
+  transformIgnorePatterns: [
+    "/node_modules/(?!(chai|@remix-run|@sindresorhus)).+\\.js$"
+  ],
 }
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async

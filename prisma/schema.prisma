@@ -78,11 +78,10 @@ model Pokemon {
   updatedAt    DateTime @updatedAt
 
   // Relations
-  portfolio    Portfolio?         @relation(fields: [portfolioId], references: [id])
-  attributes   PokemonAttributes?
+  portfolio    Portfolio?     @relation(fields: [portfolioId], references: [id])
   priceHistory PriceHistory[]
-  buyOrders    Order[]            @relation("BuyOrders")
-  sellOrders   Order[]            @relation("SellOrders")
+  buyOrders    Order[]        @relation("BuyOrders")
+  sellOrders   Order[]        @relation("SellOrders")
   alerts       Alert[]
 
   // Ajout d'un champ pour la quantité détenue
@@ -91,20 +90,6 @@ model Pokemon {
   @@index([ownerId])
   @@index([pokemonApiId])
   @@index([currentPrice])
-}
-
-// Modèle pour les attributs d'un Pokémon
-model PokemonAttributes {
-  id         String   @id @default(uuid())
-  pokemonId  String   @unique
-  height     Float?
-  weight     Float?
-  baseStats  Json // Attaque, défense, vitesse, etc.
-  abilities  String[]
-  generation Int
-
-  // Relations
-  pokemon Pokemon @relation(fields: [pokemonId], references: [id], onDelete: Cascade)
 }
 
 // Modèle pour les alertes de prix
