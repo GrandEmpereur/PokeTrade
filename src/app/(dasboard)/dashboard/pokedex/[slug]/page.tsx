@@ -407,185 +407,358 @@ export default function PokemonDetailPage({
             </span>
             <span className="text-xs font-medium text-muted-foreground ml-auto flex items-center gap-2">
               At close: 22:58 GMT+2
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="flex items-center gap-1 ml-2"
-                  >
-                    <BarChart3 className="h-4 w-4" />
-                    <span>Trader</span>
-                  </Button>
-                </SheetTrigger>
-                <SheetContent className="w-[400px] sm:w-[540px] px-6 py-4">
-                  <SheetHeader>
-                    <SheetTitle className="flex items-center gap-2">
-                      <div className="relative h-8 w-8 rounded-full overflow-hidden bg-muted">
-                        <Image
-                          src={
-                            pokemon.sprites.other?.['official-artwork']
-                              ?.front_default || pokemon.sprites.front_default
-                          }
-                          alt={pokemon.name}
-                          fill
-                          className="object-contain"
-                        />
-                      </div>
-                      Trader {formattedName}
-                    </SheetTitle>
-                    <SheetDescription>
-                      Prix actuel:{' '}
-                      <span className="font-medium">
-                        {price.toFixed(2)} coins
-                      </span>
-                      <span
-                        className={`ml-2 inline-flex items-center text-xs font-medium ${isPositive ? 'text-green-500' : 'text-red-500'}`}
-                      >
-                        {isPositive ? (
-                          <TrendingUp className="h-3 w-3 mr-1" />
-                        ) : (
-                          <TrendingDown className="h-3 w-3 mr-1" />
-                        )}
-                        {priceChange}
-                      </span>
-                    </SheetDescription>
-                  </SheetHeader>
-
-                  <div className="py-6">
-                    <div className="mb-4">
-                      <Tabs
-                        defaultValue="buy"
-                        className="w-full"
-                        onValueChange={(value) =>
-                          setTradeType(value as 'buy' | 'sell')
-                        }
-                      >
-                        <TabsList className="grid grid-cols-2 w-full">
-                          <TabsTrigger
-                            value="buy"
-                            className="flex items-center justify-center gap-1"
-                          >
-                            <PlusCircle className="h-4 w-4" /> Acheter
-                          </TabsTrigger>
-                          <TabsTrigger
-                            value="sell"
-                            className="flex items-center justify-center gap-1"
-                          >
-                            <MinusCircle className="h-4 w-4" /> Vendre
-                          </TabsTrigger>
-                        </TabsList>
-                      </Tabs>
-                    </div>
-
-                    <div className="mb-6">
-                      <Label htmlFor="quantity">Quantité</Label>
-                      <div className="flex items-center gap-2 mt-1.5">
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                          disabled={quantity <= 1}
-                        >
-                          <MinusCircle className="h-4 w-4" />
-                        </Button>
-                        <Input
-                          id="quantity"
-                          type="number"
-                          min={1}
-                          value={quantity}
-                          onChange={(e) =>
-                            setQuantity(
-                              Math.max(1, parseInt(e.target.value || '1'))
-                            )
-                          }
-                          className="text-center"
-                        />
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={() => setQuantity(quantity + 1)}
-                        >
-                          <PlusCircle className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-
-                    <div className="space-y-3">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">
-                          Prix unitaire:
+              <div className="flex items-center gap-2 ml-2">
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex items-center gap-1"
+                    >
+                      <BarChart3 className="h-4 w-4" />
+                      <span>Trader</span>
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent className="w-[400px] sm:w-[540px] px-6 py-4">
+                    <SheetHeader>
+                      <SheetTitle className="flex items-center gap-2">
+                        <div className="relative h-8 w-8 rounded-full overflow-hidden bg-muted">
+                          <Image
+                            src={
+                              pokemon.sprites.other?.['official-artwork']
+                                ?.front_default || pokemon.sprites.front_default
+                            }
+                            alt={pokemon.name}
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
+                        Trader {formattedName}
+                      </SheetTitle>
+                      <SheetDescription>
+                        Prix actuel:{' '}
+                        <span className="font-medium">
+                          {price.toFixed(2)} coins
                         </span>
-                        <span>{price.toFixed(2)} coins</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Quantité:</span>
-                        <span>{quantity}</span>
-                      </div>
-                      <Separator />
-                      <div className="flex justify-between font-medium">
-                        <span>Total:</span>
-                        <span>{(price * quantity).toFixed(2)} coins</span>
+                        <span
+                          className={`ml-2 inline-flex items-center text-xs font-medium ${isPositive ? 'text-green-500' : 'text-red-500'}`}
+                        >
+                          {isPositive ? (
+                            <TrendingUp className="h-3 w-3 mr-1" />
+                          ) : (
+                            <TrendingDown className="h-3 w-3 mr-1" />
+                          )}
+                          {priceChange}
+                        </span>
+                      </SheetDescription>
+                    </SheetHeader>
+
+                    <div className="py-6">
+                      <div className="mb-4">
+                        <Tabs
+                          defaultValue="buy"
+                          className="w-full"
+                          onValueChange={(value) =>
+                            setTradeType(value as 'buy' | 'sell')
+                          }
+                        >
+                          <TabsList className="grid grid-cols-2 w-full">
+                            <TabsTrigger
+                              value="buy"
+                              className="flex items-center justify-center gap-1"
+                            >
+                              <PlusCircle className="h-4 w-4" /> Acheter
+                            </TabsTrigger>
+                            <TabsTrigger
+                              value="sell"
+                              className="flex items-center justify-center gap-1"
+                            >
+                              <MinusCircle className="h-4 w-4" /> Vendre
+                            </TabsTrigger>
+                          </TabsList>
+                        </Tabs>
                       </div>
 
-                      {userBalance !== null && (
+                      <div className="mb-6">
+                        <Label htmlFor="quantity">Quantité</Label>
+                        <div className="flex items-center gap-2 mt-1.5">
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() =>
+                              setQuantity(Math.max(1, quantity - 1))
+                            }
+                            disabled={quantity <= 1}
+                          >
+                            <MinusCircle className="h-4 w-4" />
+                          </Button>
+                          <Input
+                            id="quantity"
+                            type="number"
+                            min={1}
+                            value={quantity}
+                            onChange={(e) =>
+                              setQuantity(
+                                Math.max(1, parseInt(e.target.value || '1'))
+                              )
+                            }
+                            className="text-center"
+                          />
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() => setQuantity(quantity + 1)}
+                          >
+                            <PlusCircle className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+
+                      <div className="space-y-3">
                         <div className="flex justify-between text-sm">
                           <span className="text-muted-foreground">
-                            Votre solde:
+                            Prix unitaire:
                           </span>
-                          <span>{userBalance.toFixed(2)} coins</span>
+                          <span>{price.toFixed(2)} coins</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">
+                            Quantité:
+                          </span>
+                          <span>{quantity}</span>
+                        </div>
+                        <Separator />
+                        <div className="flex justify-between font-medium">
+                          <span>Total:</span>
+                          <span>{(price * quantity).toFixed(2)} coins</span>
+                        </div>
+
+                        {userBalance !== null && (
+                          <div className="flex justify-between text-sm">
+                            <span className="text-muted-foreground">
+                              Votre solde:
+                            </span>
+                            <span>{userBalance.toFixed(2)} coins</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {!userId && (
+                        <div className="mt-4 text-sm text-amber-500 flex items-center gap-1.5">
+                          <AlertCircle className="h-4 w-4" />
+                          <span>Connectez-vous pour trader ce Pokémon</span>
                         </div>
                       )}
+
+                      {tradeType === 'buy' &&
+                        userBalance !== null &&
+                        userBalance < price * quantity && (
+                          <div className="mt-4 text-sm text-destructive flex items-center gap-1.5">
+                            <AlertCircle className="h-4 w-4" />
+                            <span>Solde insuffisant pour cet achat</span>
+                          </div>
+                        )}
                     </div>
 
-                    {!userId && (
-                      <div className="mt-4 text-sm text-amber-500 flex items-center gap-1.5">
-                        <AlertCircle className="h-4 w-4" />
-                        <span>Connectez-vous pour trader ce Pokémon</span>
-                      </div>
-                    )}
-
-                    {tradeType === 'buy' &&
-                      userBalance !== null &&
-                      userBalance < price * quantity && (
-                        <div className="mt-4 text-sm text-destructive flex items-center gap-1.5">
-                          <AlertCircle className="h-4 w-4" />
-                          <span>Solde insuffisant pour cet achat</span>
-                        </div>
-                      )}
-                  </div>
-
-                  <SheetFooter>
-                    <SheetClose asChild>
-                      <Button variant="outline">Annuler</Button>
-                    </SheetClose>
+                    <SheetFooter>
+                      <SheetClose asChild>
+                        <Button variant="outline">Annuler</Button>
+                      </SheetClose>
+                      <Button
+                        disabled={
+                          !userId ||
+                          (tradeType === 'buy' &&
+                            userBalance !== null &&
+                            userBalance < price * quantity) ||
+                          purchaseLoading
+                        }
+                        className={cn(
+                          'flex items-center gap-1.5',
+                          tradeType === 'buy'
+                            ? 'bg-green-600 hover:bg-green-700'
+                            : 'bg-red-600 hover:bg-red-700'
+                        )}
+                        onClick={handleTrade}
+                      >
+                        {purchaseLoading && (
+                          <div className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-1"></div>
+                        )}
+                        <DollarSign className="h-4 w-4" />
+                        {tradeType === 'buy'
+                          ? 'Acheter maintenant'
+                          : 'Vendre maintenant'}
+                      </Button>
+                    </SheetFooter>
+                  </SheetContent>
+                </Sheet>
+                <Sheet>
+                  <SheetTrigger asChild>
                     <Button
-                      disabled={
-                        !userId ||
-                        (tradeType === 'buy' &&
-                          userBalance !== null &&
-                          userBalance < price * quantity) ||
-                        purchaseLoading
-                      }
-                      className={cn(
-                        'flex items-center gap-1.5',
-                        tradeType === 'buy'
-                          ? 'bg-green-600 hover:bg-green-700'
-                          : 'bg-red-600 hover:bg-red-700'
-                      )}
-                      onClick={handleTrade}
+                      size="sm"
+                      variant="outline"
+                      className="flex items-center gap-1 bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white border-none"
                     >
-                      {purchaseLoading && (
-                        <div className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-1"></div>
-                      )}
-                      <DollarSign className="h-4 w-4" />
-                      {tradeType === 'buy'
-                        ? 'Acheter maintenant'
-                        : 'Vendre maintenant'}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="h-4 w-4"
+                      >
+                        <path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z"></path>
+                      </svg>
+                      <span>Web3</span>
                     </Button>
-                  </SheetFooter>
-                </SheetContent>
-              </Sheet>
+                  </SheetTrigger>
+                  <SheetContent className="w-[400px] sm:w-[540px] px-6 py-4">
+                    <SheetHeader>
+                      <SheetTitle className="flex items-center gap-2">
+                        <div className="relative h-8 w-8 rounded-full overflow-hidden bg-muted">
+                          <Image
+                            src={
+                              pokemon.sprites.other?.['official-artwork']
+                                ?.front_default || pokemon.sprites.front_default
+                            }
+                            alt={pokemon.name}
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
+                        {formattedName} NFT
+                      </SheetTitle>
+                      <SheetDescription>
+                        Découvrez et collectionnez des NFTs de {formattedName}{' '}
+                        sur la blockchain
+                      </SheetDescription>
+                    </SheetHeader>
+
+                    <div className="py-6">
+                      <div className="space-y-4">
+                        <Card className="overflow-hidden">
+                          <div className="relative aspect-square w-full bg-gradient-to-br from-purple-100 to-blue-100 dark:from-purple-950 dark:to-blue-950">
+                            <Image
+                              src={
+                                pokemon.sprites.other?.['official-artwork']
+                                  ?.front_default ||
+                                pokemon.sprites.front_default
+                              }
+                              alt={pokemon.name}
+                              fill
+                              className="object-contain p-8"
+                            />
+                            <div className="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
+                              #{pokemon.id.toString().padStart(3, '0')}
+                            </div>
+                          </div>
+                          <CardContent className="p-4">
+                            <div className="flex justify-between items-center mb-2">
+                              <h3 className="font-bold">{formattedName} NFT</h3>
+                              <Badge
+                                variant="outline"
+                                className="bg-gradient-to-r from-purple-500 to-blue-500 text-white border-none"
+                              >
+                                Édition limitée
+                              </Badge>
+                            </div>
+                            <p className="text-sm text-muted-foreground mb-4">
+                              Ce NFT unique vous donne la propriété exclusive de{' '}
+                              {formattedName} sur la blockchain avec des
+                              avantages spéciaux dans l'écosystème PokéTrade.
+                            </p>
+                            <div className="flex justify-between items-center text-sm">
+                              <div>
+                                <span className="text-muted-foreground">
+                                  Prix:
+                                </span>
+                                <span className="font-bold ml-2">0.05 ETH</span>
+                              </div>
+                              <div>
+                                <span className="text-muted-foreground">
+                                  Édition:
+                                </span>
+                                <span className="font-bold ml-2">1 de 100</span>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        <div className="space-y-2">
+                          <h4 className="font-medium">Avantages Web3</h4>
+                          <ul className="space-y-1.5 text-sm">
+                            <li className="flex items-start gap-2">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className="h-4 w-4 text-green-500 mt-0.5"
+                              >
+                                <path d="M20 6 9 17l-5-5"></path>
+                              </svg>
+                              <span>
+                                Propriété vérifiable sur la blockchain
+                              </span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className="h-4 w-4 text-green-500 mt-0.5"
+                              >
+                                <path d="M20 6 9 17l-5-5"></path>
+                              </svg>
+                              <span>Bonus de 10% sur les gains en trading</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className="h-4 w-4 text-green-500 mt-0.5"
+                              >
+                                <path d="M20 6 9 17l-5-5"></path>
+                              </svg>
+                              <span>Accès à des événements exclusifs</span>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+
+                    <SheetFooter>
+                      <SheetClose asChild>
+                        <Button variant="outline">Annuler</Button>
+                      </SheetClose>
+                      <Button className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white">
+                        Connecter un wallet
+                      </Button>
+                    </SheetFooter>
+                  </SheetContent>
+                </Sheet>
+              </div>
             </span>
           </div>
         </div>
