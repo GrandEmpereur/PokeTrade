@@ -10,7 +10,7 @@ import {
   type LoginFormValues,
 } from '@/validators/auth.validators';
 import { authService, type UserCredentials } from '@/services/auth.service';
-
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -26,8 +26,6 @@ import { useRouter } from 'next/navigation';
 
 export default function LoginForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<boolean>(false);
   const router = useRouter();
 
   const form = useForm<LoginFormValues>({
@@ -48,23 +46,21 @@ export default function LoginForm() {
 
   async function onSubmit(values: LoginFormValues) {
     setIsLoading(true);
-    setError(null);
-    setSuccess(false);
 
     try {
       const result = await authService.signIn(values);
 
       if (result?.error) {
-        setError(result.error);
+        toast.error(result.error);
       } else if (result?.success) {
-        setSuccess(true);
+        toast.success('Connexion réussie ! Redirection...');
         // Redirection après un court délai pour permettre à l'utilisateur de voir le message de succès
         setTimeout(() => {
           router.push('/dashboard');
         }, 2000);
       }
     } catch (error) {
-      setError('Une erreur est survenue lors de la connexion');
+      toast.error('Une erreur est survenue lors de la connexion');
     } finally {
       setIsLoading(false);
     }
@@ -78,18 +74,6 @@ export default function LoginForm() {
           Entrez vos identifiants pour vous connecter
         </p>
       </div>
-
-      {error && (
-        <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">
-          {error}
-        </div>
-      )}
-
-      {success && (
-        <div className="bg-green-500/15 text-green-500 text-sm p-3 rounded-md">
-          Connexion réussie ! Redirection...
-        </div>
-      )}
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6">
