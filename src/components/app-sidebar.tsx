@@ -68,45 +68,45 @@ const data = {
       title: 'Wallet',
       icon: WalletIcon,
       isActive: true,
-      url: '/wallet',
+      url: '/dashboard/wallet',
       items: [
         {
           title: 'Mes NFTs',
-          url: '/wallet/nfts',
+          url: '/dashboard/wallet/nfts',
         },
         {
           title: 'Transactions',
-          url: '/wallet/transactions',
+          url: '/dashboard/wallet/transactions',
         },
       ],
     },
     {
       title: 'Trading',
       icon: TrendingUpIcon,
-      url: '/trading',
+      url: '/dashboard/trading',
       items: [
         {
           title: 'Offres Actives',
-          url: '/trading/active',
+          url: '/dashboard/trading/active',
         },
         {
           title: 'Historique',
-          url: '/trading/history',
+          url: '/dashboard/trading/history',
         },
       ],
     },
     {
       title: 'Airdrops',
       icon: BadgePercentIcon,
-      url: '/airdrops',
+      url: '/dashboard/airdrops',
       items: [
         {
           title: 'Promotions',
-          url: '/airdrops/promotions',
+          url: '/dashboard/airdrops/promotions',
         },
         {
           title: 'Événements',
-          url: '/airdrops/events',
+          url: '/dashboard/airdrops/events',
         },
       ],
     },

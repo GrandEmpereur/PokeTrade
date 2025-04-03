@@ -19,7 +19,7 @@ interface SiteHeaderProps {
   title?: string;
 }
 
-export function SiteHeader({ title = 'Documents' }: SiteHeaderProps) {
+export function SiteHeader({ title = 'Tableau de bord' }: SiteHeaderProps) {
   const pathname = usePathname();
   const pathSegments = pathname.split('/').filter(Boolean);
 
