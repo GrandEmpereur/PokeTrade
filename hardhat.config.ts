@@ -1,5 +1,6 @@
 import * as dotenv from "dotenv";
 import "@nomicfoundation/hardhat-toolbox";
+//@ts-ignore
 import { HardhatUserConfig } from "hardhat/types";
 
 dotenv.config();
