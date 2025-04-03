@@ -11,7 +11,6 @@ import { Badge } from '@/components/ui/badge';
 import {
   getPokemonByGeneration,
   getPokemonHighlights,
-  getAllPokemon,
 } from '@/services/pokeApi.server';
 import Image from 'next/image';
 import { PokemonWithGeneration } from '@/types/pokemon/pokemon.types';
@@ -332,7 +331,7 @@ interface PokemonFilters {
 // Composant principal
 export default function PokedexPage() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState('all');
+  const [activeTab, setActiveTab] = useState('gen1');
   const [filters, setFilters] = useState<PokemonFilters>({
     types: [],
     generations: [],
@@ -367,6 +366,22 @@ export default function PokedexPage() {
 
   // Liste de toutes les générations disponibles
   const pokemonGenerations = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+  // Utiliser la génération actuelle depuis l'onglet actif
+  const currentGeneration = useMemo(() => {
+    if (activeTab.startsWith('gen')) {
+      const genNumber = parseInt(activeTab.replace('gen', ''));
+      return isNaN(genNumber) ? 1 : genNumber;
+    }
+    return 1;
+  }, [activeTab]);
+
+  // Fonction pour gérer le changement d'onglet
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    // Réinitialiser la recherche lors du changement d'onglet pour de meilleures performances
+    setSearchTerm('');
+  };
 
   // Fonction pour gérer le changement d'état d'un filtre de type
   const handleTypeFilterChange = (type: string, checked: boolean) => {
@@ -572,12 +587,11 @@ export default function PokedexPage() {
 
           <div className="px-4 lg:px-6">
             <Tabs
-              defaultValue="all"
+              defaultValue="gen1"
               className="w-full"
-              onValueChange={setActiveTab}
+              onValueChange={handleTabChange}
             >
               <TabsList className="mb-4 flex flex-wrap">
-                <TabsTrigger value="all">Tous</TabsTrigger>
                 <TabsTrigger value="gen1">Génération 1</TabsTrigger>
                 <TabsTrigger value="gen2">Génération 2</TabsTrigger>
                 <TabsTrigger value="gen3">Génération 3</TabsTrigger>
@@ -589,85 +603,16 @@ export default function PokedexPage() {
                 <TabsTrigger value="gen9">Génération 9</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="all">
-                <PokemonAllHighlightsWithPagination
-                  searchTerm={searchTerm}
-                  typeFilters={filters.types}
-                  generationFilters={filters.generations}
-                />
-              </TabsContent>
-
-              <TabsContent value="gen1">
-                <PokemonGenerationWithPagination
-                  generation={1}
-                  searchTerm={searchTerm}
-                  typeFilters={filters.types}
-                />
-              </TabsContent>
-
-              <TabsContent value="gen2">
-                <PokemonGenerationWithPagination
-                  generation={2}
-                  searchTerm={searchTerm}
-                  typeFilters={filters.types}
-                />
-              </TabsContent>
-
-              <TabsContent value="gen3">
-                <PokemonGenerationWithPagination
-                  generation={3}
-                  searchTerm={searchTerm}
-                  typeFilters={filters.types}
-                />
-              </TabsContent>
-
-              <TabsContent value="gen4">
-                <PokemonGenerationWithPagination
-                  generation={4}
-                  searchTerm={searchTerm}
-                  typeFilters={filters.types}
-                />
-              </TabsContent>
-
-              <TabsContent value="gen5">
-                <PokemonGenerationWithPagination
-                  generation={5}
-                  searchTerm={searchTerm}
-                  typeFilters={filters.types}
-                />
-              </TabsContent>
-
-              <TabsContent value="gen6">
-                <PokemonGenerationWithPagination
-                  generation={6}
-                  searchTerm={searchTerm}
-                  typeFilters={filters.types}
-                />
-              </TabsContent>
-
-              <TabsContent value="gen7">
-                <PokemonGenerationWithPagination
-                  generation={7}
-                  searchTerm={searchTerm}
-                  typeFilters={filters.types}
-                />
-              </TabsContent>
-
-              <TabsContent value="gen8">
-                <PokemonGenerationWithPagination
-                  generation={8}
-                  searchTerm={searchTerm}
-                  typeFilters={filters.types}
-                />
-              </TabsContent>
-
-              <TabsContent value="gen9">
-                <PokemonGenerationWithPagination
-                  generation={9}
-                  searchTerm={searchTerm}
-                  typeFilters={filters.types}
-                />
-              </TabsContent>
+              {/* Générer le contenu dynamiquement en fonction de l'onglet actif */}
+              {pokemonGenerations.map((gen) => (
+                <TabsContent key={`gen${gen}`} value={`gen${gen}`}>
+                  <PokemonGenerationWithPagination
+                    generation={gen}
+                    searchTerm={searchTerm}
+                    typeFilters={filters.types}
+                  />
+                </TabsContent>
+              ))}
             </Tabs>
           </div>
         </div>
@@ -733,123 +678,6 @@ function PokemonGenerationWithPagination({
       }
     },
     [generation, typeFilters, searchTerm, pokemonPerPage]
-  );
-
-  // Effet pour charger les données initiales et quand les filtres changent
-  useEffect(() => {
-    setCurrentPage(1); // Réinitialiser à la page 1 quand les filtres changent
-    fetchPokemonWithFilters(1);
-  }, [fetchPokemonWithFilters]);
-
-  // Gestionnaire de changement de page qui utilise la pagination côté serveur
-  const handlePageChange = useCallback(
-    (page: number) => {
-      if (page < 1 || page > pokemonData.totalPages) return;
-      setCurrentPage(page);
-      fetchPokemonWithFilters(page);
-      // Scroll vers le haut pour une meilleure UX
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    },
-    [pokemonData.totalPages, fetchPokemonWithFilters]
-  );
-
-  if (isLoading && pokemonData.pokemons.length === 0) {
-    return <LoadingPokemonGrid rows={3} />;
-  }
-
-  if (pokemonData.total === 0) {
-    return (
-      <div className="py-10 text-center">
-        <div className="inline-flex items-center justify-center rounded-full bg-muted p-6 mb-4">
-          <Search className="h-10 w-10 text-muted-foreground" />
-        </div>
-        <h3 className="text-xl font-semibold mb-1">Aucun résultat</h3>
-        <p className="text-muted-foreground">
-          Aucun Pokémon ne correspond à votre recherche.
-        </p>
-      </div>
-    );
-  }
-
-  return (
-    <div>
-      {isLoading && (
-        <div className="mb-4 text-center text-sm text-muted-foreground">
-          Chargement en cours...
-        </div>
-      )}
-
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-        {pokemonData.pokemons.map((pokemon) => (
-          <PokemonCard key={pokemon.id} pokemon={pokemon} />
-        ))}
-      </div>
-
-      <PaginationControl
-        currentPage={pokemonData.page}
-        totalPages={pokemonData.totalPages}
-        onPageChange={handlePageChange}
-      />
-    </div>
-  );
-}
-
-// Composant pour afficher tous les Pokémon
-function PokemonAllHighlightsWithPagination({
-  searchTerm = '',
-  typeFilters = [],
-  generationFilters = [],
-}: {
-  searchTerm?: string;
-  typeFilters?: string[];
-  generationFilters?: number[];
-}) {
-  const [isLoading, setIsLoading] = useState(true);
-  const [pokemonData, setPokemonData] = useState<{
-    pokemons: PokemonWithGeneration[];
-    total: number;
-    page: number;
-    totalPages: number;
-    limit: number;
-  }>({
-    pokemons: [],
-    total: 0,
-    page: 1,
-    totalPages: 0,
-    limit: 24,
-  });
-  const [currentPage, setCurrentPage] = useState(1);
-  const pokemonPerPage = 24;
-
-  // Fonction pour récupérer les données avec pagination et filtres
-  const fetchPokemonWithFilters = useCallback(
-    async (page: number) => {
-      setIsLoading(true);
-      try {
-        console.log(`Récupération de tous les Pokémon, page ${page}`);
-        const response = await getAllPokemon({
-          page,
-          limit: pokemonPerPage,
-          types: typeFilters,
-          searchTerm,
-          generations: generationFilters,
-        });
-
-        if (response.success && response.data) {
-          setPokemonData(response.data);
-        } else {
-          console.error(
-            'Erreur lors de la récupération des Pokémon:',
-            response.error
-          );
-        }
-      } catch (error) {
-        console.error('Erreur inattendue:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [typeFilters, searchTerm, generationFilters, pokemonPerPage]
   );
 
   // Effet pour charger les données initiales et quand les filtres changent
