@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "format": "npx prettier --write .",
@@ -20,7 +20,8 @@
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
     "prisma:seed": "npx ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed.ts",
-    "db:seed": "npm run prisma:generate && npm run prisma:seed"
+    "db:seed": "npm run prisma:generate && npm run prisma:seed",
+    "postinstall": "prisma generate"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown",
@@ -140,9 +141,6 @@
     "typechain": "^8.3.2"
   },
   "overrides": {
-    "react-is": "^19.0.0-rc-69d4b800-20241021",
-    "react-day-picker": {
-      "date-fns": "^4.1.0"
-    }
+    "react-is": "^19.0.0-rc-69d4b800-20241021"
   }
 }
