@@ -17,6 +17,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "baseUrl": "./",
     "plugins": [
       {
         "name": "next"
@@ -30,13 +31,16 @@
         "./src/components/*"
       ],
       "@/types/*": [
-        "./src/lib/types/*"
+        "src/types/*"
       ],
       "@/services/*": [
-        "./src/lib/services/*"
+        "src/services/*"
       ],
       "@/validators/*": [
-        "./src/lib/validators/*"
+        "src/validators/*"
+      ],
+      "@/utils/*": [
+        "src/utils/*"
       ]
     }
   },

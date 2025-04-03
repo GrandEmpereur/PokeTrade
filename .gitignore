@@ -17,6 +17,9 @@ package-lock.json
 # testing
 /coverage
 
+# Swc
+.swc
+
 # next.js
 /.next/
 /out/
@@ -27,6 +30,7 @@ package-lock.json
 # misc
 .DS_Store
 *.pem
+.idea
 
 # debug
 npm-debug.log*
@@ -44,3 +48,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+#web3
+/cache

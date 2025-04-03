@@ -1,11 +1,15 @@
-import React from 'react'
+import NavBar from '@/components/navBar';
+import Footer from '@/components/footer';
+import React from 'react';
 
 function SubRootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div>
+    <main>
+      <NavBar />
       {children}
-    </div>
-  )
+      <Footer />
+    </main>
+  );
 }
 
-export default SubRootLayout
+export default SubRootLayout;
