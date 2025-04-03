@@ -28,20 +28,16 @@ const nextConfig: NextConfig = {
     ];
   },
 
-  // Ajouter des redirections si nécessaire
+  // Ajouter des redirections pour l'authentification Supabase
   async redirects() {
-    const redirects = [];
-
-    // Ajouter la redirection pour l'authentification Supabase sur localhost en dev
-    if (process.env.NODE_ENV === 'development') {
-      redirects.push({
+    return [
+      // Toujours rediriger vers le domaine de production
+      {
         source: '/auth/confirm',
-        destination: `${process.env.NEXT_PUBLIC_APP_URL || 'https://poke-trade-five.vercel.app'}/auth/confirm`,
+        destination: 'https://poke-trade-five.vercel.app/auth/confirm',
         permanent: false,
-      });
-    }
-
-    return redirects;
+      }
+    ];
   },
 };
 

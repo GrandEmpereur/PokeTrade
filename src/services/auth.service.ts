@@ -237,19 +237,16 @@ export class AuthService {
             throw new Error("Cette méthode ne peut être appelée que côté client.");
         }
 
-        // Utiliser l'URL de l'app depuis les variables d'environnement ou générer une URL basée sur window.location
-        let redirectUrl;
-        if (process.env.NODE_ENV === 'production') {
-            redirectUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
-        } else {
-            redirectUrl = window.location.origin;
-        }
+        // URL de redirection en dur
+        const redirectUrl = "https://poke-trade-five.vercel.app";
 
         const supabase = createClient();
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: 'github',
             options: {
                 redirectTo: `${redirectUrl}/auth/callback`,
+                // Forcer la redirection à utiliser HTTPS
+                skipBrowserRedirect: false,
             }
         });
 
@@ -269,20 +266,17 @@ export class AuthService {
             throw new Error("Cette méthode ne peut être appelée que côté client.");
         }
 
-        // Utiliser l'URL de l'app depuis les variables d'environnement ou générer une URL basée sur window.location
-        let redirectUrl;
-        if (process.env.NODE_ENV === 'production') {
-            redirectUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
-        } else {
-            redirectUrl = window.location.origin;
-        }
+        // URL de redirection en dur
+        const redirectUrl = "https://poke-trade-five.vercel.app";
 
         const supabase = createClient();
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
                 redirectTo: `${redirectUrl}/auth/callback`,
-            },
+                // Forcer la redirection à utiliser HTTPS
+                skipBrowserRedirect: false,
+            }
         });
 
         if (error) {
