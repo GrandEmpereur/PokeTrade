@@ -2,7 +2,7 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ['raw.githubusercontent.com', 'picsum.photos'],
+    domains: ['raw.githubusercontent.com', 'picsum.photos', 'randomuser.me'],
   },
 
   // Configuration pour les en-têtes HTTP
