@@ -241,10 +241,7 @@ export class AuthService {
 
         const supabase = createClient();
         const { data, error } = await supabase.auth.signInWithOAuth({
-            provider: 'github',
-            options: {
-                redirectTo: `${appUrl}/auth/callback`,
-            },
+            provider: 'github'
         });
 
         if (error) {
