@@ -1,11 +1,9 @@
 'use client';
-
 import React, { useState } from 'react';
-//@ts-ignore
 import { ethers } from 'ethers';
 import PaymentNFTAbi from '@/abis/PaymentNFT.abi.json';
 
-export default function MintButton() {
+export function MintButton() {
   const [status, setStatus] = useState('');
 
   async function handleMint() {
@@ -14,35 +12,22 @@ export default function MintButton() {
         setStatus('Please install Metamask.');
         return;
       }
-
       const provider = new ethers.BrowserProvider(window.ethereum);
+      await provider.send('wallet_switchEthereumChain', [{ chainId: '0xaa36a7' }]);
       await provider.send('eth_requestAccounts', []);
-
       const signer = await provider.getSigner();
-
-      const contractAddress = process.env.NEXT_PUBLIC_PAYMENTNFT_ADDRESS || '';
-      if (!contractAddress) {
+      const address = process.env.NEXT_PUBLIC_PAYMENTNFT_ADDRESS || '';
+      if (!address) {
         setStatus('Contract address not defined.');
         return;
       }
-      const paymentNFT = new ethers.Contract(
-        contractAddress,
-        PaymentNFTAbi.abi,
-        signer
-      );
-
+      const contract = new ethers.Contract(address, PaymentNFTAbi.abi, signer);
       setStatus('Transaction in progress...');
-
-      const tx = await paymentNFT.payAndMint({
-        value: ethers.parseEther('0.01'),
-      });
-
+      const tx = await contract.payAndMint({ value: ethers.parseEther('0.01') });
       setStatus('Waiting for confirmation...');
       await tx.wait();
-
       setStatus('NFT successfully minted!');
     } catch (err: any) {
-      console.error(err);
       setStatus('Error: ' + (err.message || 'Unknown'));
     }
   }
