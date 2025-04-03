@@ -237,14 +237,17 @@ export class AuthService {
             throw new Error("Cette méthode ne peut être appelée que côté client.");
         }
 
-        const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+        // URL de redirection en dur
+        const redirectUrl = "https://poke-trade-five.vercel.app";
 
         const supabase = createClient();
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: 'github',
             options: {
-                redirectTo: `${appUrl}/auth/callback`,
-            },
+                redirectTo: `${redirectUrl}/auth/callback`,
+                // Forcer la redirection à utiliser HTTPS
+                skipBrowserRedirect: false,
+            }
         });
 
         if (error) {
@@ -263,14 +266,17 @@ export class AuthService {
             throw new Error("Cette méthode ne peut être appelée que côté client.");
         }
 
-        const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+        // URL de redirection en dur
+        const redirectUrl = "https://poke-trade-five.vercel.app";
 
         const supabase = createClient();
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                redirectTo: `${appUrl}/auth/callback`,
-            },
+                redirectTo: `${redirectUrl}/auth/callback`,
+                // Forcer la redirection à utiliser HTTPS
+                skipBrowserRedirect: false,
+            }
         });
 
         if (error) {

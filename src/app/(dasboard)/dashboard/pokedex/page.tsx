@@ -687,19 +687,39 @@ function PokemonGenerationWithPagination({
   typeFilters?: string[];
 }) {
   const [isLoading, setIsLoading] = useState(true);
-  const [pokemonList, setPokemonList] = useState<PokemonWithGeneration[]>([]);
+  const [pokemonData, setPokemonData] = useState<{
+    pokemons: PokemonWithGeneration[];
+    total: number;
+    page: number;
+    totalPages: number;
+    limit: number;
+  }>({
+    pokemons: [],
+    total: 0,
+    page: 1,
+    totalPages: 0,
+    limit: 24,
+  });
   const [currentPage, setCurrentPage] = useState(1);
   const pokemonPerPage = 24;
 
-  useEffect(() => {
-    setIsLoading(true);
-
-    async function fetchPokemon() {
+  // Fonction pour récupérer les données avec pagination et filtres
+  const fetchPokemonWithFilters = useCallback(
+    async (page: number) => {
+      setIsLoading(true);
       try {
-        const response = await getPokemonByGeneration(generation);
+        console.log(
+          `Récupération des Pokémon de la génération ${generation}, page ${page}`
+        );
+        const response = await getPokemonByGeneration(generation, {
+          page,
+          limit: pokemonPerPage,
+          types: typeFilters,
+          searchTerm,
+        });
 
         if (response.success && response.data) {
-          setPokemonList(response.data);
+          setPokemonData(response.data);
         } else {
           console.error(
             'Erreur lors de la récupération des Pokémon:',
@@ -711,63 +731,33 @@ function PokemonGenerationWithPagination({
       } finally {
         setIsLoading(false);
       }
-    }
-
-    fetchPokemon();
-  }, [generation]);
-
-  // Utilisation de useMemo pour filtrer les Pokémon
-  const filteredPokemon = useMemo(() => {
-    if (!pokemonList.length) return [];
-
-    return pokemonList.filter((pokemon) => {
-      // Filtrer par terme de recherche
-      const matchesSearch = pokemon.name
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase());
-
-      // Filtrer par type
-      const matchesType =
-        typeFilters.length === 0 ||
-        pokemon.types.some((type) => typeFilters.includes(type));
-
-      return matchesSearch && matchesType;
-    });
-  }, [pokemonList, searchTerm, typeFilters]);
-
-  // Utilisation de useMemo pour paginer les résultats
-  const paginatedPokemon = useMemo(() => {
-    const startIndex = (currentPage - 1) * pokemonPerPage;
-    return filteredPokemon.slice(startIndex, startIndex + pokemonPerPage);
-  }, [filteredPokemon, currentPage, pokemonPerPage]);
-
-  // Calcul du nombre total de pages avec useMemo
-  const totalPages = useMemo(
-    () => Math.ceil(filteredPokemon.length / pokemonPerPage),
-    [filteredPokemon, pokemonPerPage]
+    },
+    [generation, typeFilters, searchTerm, pokemonPerPage]
   );
 
-  // Utilisation de useCallback pour éviter les re-rendus inutiles
+  // Effet pour charger les données initiales et quand les filtres changent
+  useEffect(() => {
+    setCurrentPage(1); // Réinitialiser à la page 1 quand les filtres changent
+    fetchPokemonWithFilters(1);
+  }, [fetchPokemonWithFilters]);
+
+  // Gestionnaire de changement de page qui utilise la pagination côté serveur
   const handlePageChange = useCallback(
     (page: number) => {
-      if (page < 1 || page > totalPages) return;
+      if (page < 1 || page > pokemonData.totalPages) return;
       setCurrentPage(page);
+      fetchPokemonWithFilters(page);
       // Scroll vers le haut pour une meilleure UX
       window.scrollTo({ top: 0, behavior: 'smooth' });
     },
-    [totalPages]
+    [pokemonData.totalPages, fetchPokemonWithFilters]
   );
 
-  // Reset à la page 1 quand les filtres changent
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchTerm, typeFilters]);
-
-  if (isLoading) {
+  if (isLoading && pokemonData.pokemons.length === 0) {
     return <LoadingPokemonGrid rows={3} />;
   }
 
-  if (filteredPokemon.length === 0) {
+  if (pokemonData.total === 0) {
     return (
       <div className="py-10 text-center">
         <div className="inline-flex items-center justify-center rounded-full bg-muted p-6 mb-4">
@@ -783,15 +773,21 @@ function PokemonGenerationWithPagination({
 
   return (
     <div>
+      {isLoading && (
+        <div className="mb-4 text-center text-sm text-muted-foreground">
+          Chargement en cours...
+        </div>
+      )}
+
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-        {paginatedPokemon.map((pokemon) => (
+        {pokemonData.pokemons.map((pokemon) => (
           <PokemonCard key={pokemon.id} pokemon={pokemon} />
         ))}
       </div>
 
       <PaginationControl
-        currentPage={currentPage}
-        totalPages={totalPages}
+        currentPage={pokemonData.page}
+        totalPages={pokemonData.totalPages}
         onPageChange={handlePageChange}
       />
     </div>
@@ -809,19 +805,38 @@ function PokemonAllHighlightsWithPagination({
   generationFilters?: number[];
 }) {
   const [isLoading, setIsLoading] = useState(true);
-  const [pokemonList, setPokemonList] = useState<PokemonWithGeneration[]>([]);
+  const [pokemonData, setPokemonData] = useState<{
+    pokemons: PokemonWithGeneration[];
+    total: number;
+    page: number;
+    totalPages: number;
+    limit: number;
+  }>({
+    pokemons: [],
+    total: 0,
+    page: 1,
+    totalPages: 0,
+    limit: 24,
+  });
   const [currentPage, setCurrentPage] = useState(1);
   const pokemonPerPage = 24;
 
-  useEffect(() => {
-    setIsLoading(true);
-
-    async function fetchAllPokemon() {
+  // Fonction pour récupérer les données avec pagination et filtres
+  const fetchPokemonWithFilters = useCallback(
+    async (page: number) => {
+      setIsLoading(true);
       try {
-        const response = await getAllPokemon();
+        console.log(`Récupération de tous les Pokémon, page ${page}`);
+        const response = await getAllPokemon({
+          page,
+          limit: pokemonPerPage,
+          types: typeFilters,
+          searchTerm,
+          generations: generationFilters,
+        });
 
         if (response.success && response.data) {
-          setPokemonList(response.data);
+          setPokemonData(response.data);
         } else {
           console.error(
             'Erreur lors de la récupération des Pokémon:',
@@ -833,68 +848,33 @@ function PokemonAllHighlightsWithPagination({
       } finally {
         setIsLoading(false);
       }
-    }
-
-    fetchAllPokemon();
-  }, []);
-
-  // Utilisation de useMemo pour filtrer les Pokémon
-  const filteredPokemon = useMemo(() => {
-    if (!pokemonList.length) return [];
-
-    return pokemonList.filter((pokemon) => {
-      // Filtrer par terme de recherche
-      const matchesSearch = pokemon.name
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase());
-
-      // Filtrer par type
-      const matchesType =
-        typeFilters.length === 0 ||
-        pokemon.types.some((type) => typeFilters.includes(type));
-
-      // Filtrer par génération
-      const matchesGeneration =
-        generationFilters.length === 0 ||
-        generationFilters.includes(pokemon.generation);
-
-      return matchesSearch && matchesType && matchesGeneration;
-    });
-  }, [pokemonList, searchTerm, typeFilters, generationFilters]);
-
-  // Utilisation de useMemo pour paginer les résultats
-  const paginatedPokemon = useMemo(() => {
-    const startIndex = (currentPage - 1) * pokemonPerPage;
-    return filteredPokemon.slice(startIndex, startIndex + pokemonPerPage);
-  }, [filteredPokemon, currentPage, pokemonPerPage]);
-
-  // Calcul du nombre total de pages avec useMemo
-  const totalPages = useMemo(
-    () => Math.ceil(filteredPokemon.length / pokemonPerPage),
-    [filteredPokemon, pokemonPerPage]
+    },
+    [typeFilters, searchTerm, generationFilters, pokemonPerPage]
   );
 
-  // Utilisation de useCallback pour éviter les re-rendus inutiles
+  // Effet pour charger les données initiales et quand les filtres changent
+  useEffect(() => {
+    setCurrentPage(1); // Réinitialiser à la page 1 quand les filtres changent
+    fetchPokemonWithFilters(1);
+  }, [fetchPokemonWithFilters]);
+
+  // Gestionnaire de changement de page qui utilise la pagination côté serveur
   const handlePageChange = useCallback(
     (page: number) => {
-      if (page < 1 || page > totalPages) return;
+      if (page < 1 || page > pokemonData.totalPages) return;
       setCurrentPage(page);
+      fetchPokemonWithFilters(page);
       // Scroll vers le haut pour une meilleure UX
       window.scrollTo({ top: 0, behavior: 'smooth' });
     },
-    [totalPages]
+    [pokemonData.totalPages, fetchPokemonWithFilters]
   );
 
-  // Reset à la page 1 quand les filtres changent
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchTerm, typeFilters, generationFilters]);
-
-  if (isLoading) {
+  if (isLoading && pokemonData.pokemons.length === 0) {
     return <LoadingPokemonGrid rows={3} />;
   }
 
-  if (filteredPokemon.length === 0) {
+  if (pokemonData.total === 0) {
     return (
       <div className="py-10 text-center">
         <div className="inline-flex items-center justify-center rounded-full bg-muted p-6 mb-4">
@@ -910,15 +890,21 @@ function PokemonAllHighlightsWithPagination({
 
   return (
     <div>
+      {isLoading && (
+        <div className="mb-4 text-center text-sm text-muted-foreground">
+          Chargement en cours...
+        </div>
+      )}
+
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-        {paginatedPokemon.map((pokemon) => (
+        {pokemonData.pokemons.map((pokemon) => (
           <PokemonCard key={pokemon.id} pokemon={pokemon} />
         ))}
       </div>
 
       <PaginationControl
-        currentPage={currentPage}
-        totalPages={totalPages}
+        currentPage={pokemonData.page}
+        totalPages={pokemonData.totalPages}
         onPageChange={handlePageChange}
       />
     </div>
