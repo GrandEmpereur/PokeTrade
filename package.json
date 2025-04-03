@@ -140,6 +140,9 @@
     "typechain": "^8.3.2"
   },
   "overrides": {
-    "react-is": "^19.0.0-rc-69d4b800-20241021"
+    "react-is": "^19.0.0-rc-69d4b800-20241021",
+    "react-day-picker": {
+      "date-fns": "^4.1.0"
+    }
   }
 }
