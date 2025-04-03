@@ -128,15 +128,29 @@ export async function getPokemonById(id: number): Promise<PokemonDetails | null>
 
 /**
  * Récupère les Pokémon d'une génération spécifique (server action)
+ * @param generation Numéro de la génération (1-9)
+ * @param options Options de filtrage et pagination
  */
 export async function getPokemonByGeneration(
-    generation: number
-): Promise<ApiResponse<PokemonWithGeneration[]>> {
+    generation: number,
+    options?: {
+        page?: number;
+        limit?: number;
+        types?: string[];
+        searchTerm?: string;
+    }
+): Promise<ApiResponse<{
+    pokemons: PokemonWithGeneration[];
+    total: number;
+    page: number;
+    totalPages: number;
+    limit: number;
+}>> {
     try {
-        const data = await pokeApiService.getPokemonByGeneration(generation);
+        const result = await pokeApiService.getPokemonByGeneration(generation, options);
         return {
             success: true,
-            data,
+            data: result,
         };
     } catch (error: any) {
         console.error("Erreur lors de la récupération des Pokémon:", error);
@@ -170,41 +184,91 @@ export async function getPokemonHighlights(
 
 /**
  * Récupère tous les Pokémon disponibles (server action)
- * @param limit Nombre maximum de Pokémon à récupérer par génération (0 = tous)
+ * @param options Options de filtrage et pagination
  */
 export async function getAllPokemon(
-    limit = 0
-): Promise<ApiResponse<PokemonWithGeneration[]>> {
+    options?: {
+        page?: number;
+        limit?: number;
+        types?: string[];
+        searchTerm?: string;
+        generations?: number[];
+        batchSize?: number;
+    }
+): Promise<ApiResponse<{
+    pokemons: PokemonWithGeneration[];
+    total: number;
+    page: number;
+    totalPages: number;
+    limit: number;
+}>> {
     try {
-        // Récupérer les Pokémon de toutes les générations (1-9)
-        const allPokemons: PokemonWithGeneration[] = [];
+        const {
+            page = 1,
+            limit = 24,
+            types = [],
+            searchTerm = "",
+            generations = [],
+            batchSize = 3 // Nombre de générations à récupérer par lot
+        } = options || {};
 
-        // Récupérer les Pokémon de chaque génération en parallèle
-        const genPromises = [];
-        for (let gen = 1; gen <= 9; gen++) {
-            genPromises.push(pokeApiService.getPokemonByGeneration(gen));
-        }
+        // Tableau pour stocker tous les Pokémon filtrés
+        let allPokemons: PokemonWithGeneration[] = [];
+        let totalCount = 0;
 
-        const genResults = await Promise.allSettled(genPromises);
+        // Déterminer quelles générations récupérer
+        const generationsToFetch = generations.length > 0
+            ? generations
+            : [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-        // Traiter les résultats
-        genResults.forEach((result, index) => {
-            if (result.status === 'fulfilled') {
-                const genPokemons = result.value;
-                // Si limit est spécifié, ne prendre que le nombre demandé par génération
-                const pokemonsToAdd = limit > 0 ? genPokemons.slice(0, limit) : genPokemons;
-                allPokemons.push(...pokemonsToAdd);
-            } else {
-                console.error(`Erreur lors de la récupération de la génération ${index + 1}:`, result.reason);
+        // Récupérer les Pokémon par lots de générations pour éviter les timeouts
+        for (let i = 0; i < generationsToFetch.length; i += batchSize) {
+            // Prendre un lot de générations
+            const genBatch = generationsToFetch.slice(i, i + batchSize);
+
+            // Récupérer toutes les générations du lot en parallèle (mais pas toutes les 9)
+            const batchPromises = genBatch.map(gen =>
+                pokeApiService.getPokemonByGeneration(gen, {
+                    types,
+                    searchTerm,
+                    // On ne pagine pas ici, on récupère tout pour pouvoir ensuite paginer l'ensemble
+                    limit: 0
+                })
+            );
+
+            const results = await Promise.all(batchPromises);
+
+            // Agréger les résultats
+            results.forEach(result => {
+                totalCount += result.total;
+                allPokemons = allPokemons.concat(result.pokemons);
+            });
+
+            // Pause entre les lots pour éviter de surcharger
+            if (i + batchSize < generationsToFetch.length) {
+                await new Promise(resolve => setTimeout(resolve, 100));
             }
-        });
+        }
 
         // Trier par ID pour avoir un ordre croissant
         allPokemons.sort((a, b) => a.id - b.id);
 
+        // Appliquer la pagination
+        const totalPages = Math.ceil(allPokemons.length / limit);
+        const safeCurrentPage = page < 1 ? 1 : page > totalPages && totalPages > 0 ? totalPages : page;
+
+        const startIndex = (safeCurrentPage - 1) * limit;
+        const paginatedPokemons = allPokemons.slice(startIndex, startIndex + limit);
+
         return {
             success: true,
-            data: allPokemons,
+            data: {
+                pokemons: paginatedPokemons,
+                total: allPokemons.length,
+                page: safeCurrentPage,
+                totalPages,
+                limit
+            }
         };
     } catch (error: any) {
         console.error("Erreur lors de la récupération de tous les Pokémon:", error);
