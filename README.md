@@ -13,6 +13,9 @@ where users can buy, sell, and track price trends just like real traders.
 
 ```
 ├── .env.example
+├── .github
+    └── workflows
+    │   └── ci-cd.yml
 ├── .gitignore
 ├── .husky
     ├── .gitignore
@@ -20,71 +23,281 @@ where users can buy, sell, and track price trends just like real traders.
     └── pre-commit
 ├── .prettierignore
 ├── .prettierrc
+├── Dockerfile
+├── Makefile
 ├── README.md
-├── bun.lock
+├── artifacts
+    ├── @openzeppelin
+    │   └── contracts
+    │   │   ├── access
+    │   │       └── Ownable.sol
+    │   │       │   ├── Ownable.dbg.json
+    │   │       │   └── Ownable.json
+    │   │   ├── interfaces
+    │   │       └── draft-IERC6093.sol
+    │   │       │   ├── IERC1155Errors.dbg.json
+    │   │       │   ├── IERC1155Errors.json
+    │   │       │   ├── IERC20Errors.dbg.json
+    │   │       │   ├── IERC20Errors.json
+    │   │       │   ├── IERC721Errors.dbg.json
+    │   │       │   └── IERC721Errors.json
+    │   │   ├── token
+    │   │       └── ERC721
+    │   │       │   ├── ERC721.sol
+    │   │       │       ├── ERC721.dbg.json
+    │   │       │       └── ERC721.json
+    │   │       │   ├── IERC721.sol
+    │   │       │       ├── IERC721.dbg.json
+    │   │       │       └── IERC721.json
+    │   │       │   ├── IERC721Receiver.sol
+    │   │       │       ├── IERC721Receiver.dbg.json
+    │   │       │       └── IERC721Receiver.json
+    │   │       │   ├── extensions
+    │   │       │       └── IERC721Metadata.sol
+    │   │       │       │   ├── IERC721Metadata.dbg.json
+    │   │       │       │   └── IERC721Metadata.json
+    │   │       │   └── utils
+    │   │       │       └── ERC721Utils.sol
+    │   │       │           ├── ERC721Utils.dbg.json
+    │   │       │           └── ERC721Utils.json
+    │   │   └── utils
+    │   │       ├── Context.sol
+    │   │           ├── Context.dbg.json
+    │   │           └── Context.json
+    │   │       ├── Panic.sol
+    │   │           ├── Panic.dbg.json
+    │   │           └── Panic.json
+    │   │       ├── Strings.sol
+    │   │           ├── Strings.dbg.json
+    │   │           └── Strings.json
+    │   │       ├── introspection
+    │   │           ├── ERC165.sol
+    │   │           │   ├── ERC165.dbg.json
+    │   │           │   └── ERC165.json
+    │   │           └── IERC165.sol
+    │   │           │   ├── IERC165.dbg.json
+    │   │           │   └── IERC165.json
+    │   │       └── math
+    │   │           ├── Math.sol
+    │   │               ├── Math.dbg.json
+    │   │               └── Math.json
+    │   │           ├── SafeCast.sol
+    │   │               ├── SafeCast.dbg.json
+    │   │               └── SafeCast.json
+    │   │           └── SignedMath.sol
+    │   │               ├── SignedMath.dbg.json
+    │   │               └── SignedMath.json
+    ├── build-info
+    │   └── 9ba667d9b79de03ef483634e19f63ab2.json
+    └── contracts
+    │   └── PaymentNFT.sol
+    │       ├── PaymentNFT.dbg.json
+    │       └── PaymentNFT.json
 ├── commitlint.config.js
 ├── components.json
+├── contracts
+    └── PaymentNFT.sol
+├── docker-compose.yml
 ├── eslint.config.mjs
+├── global.d.ts
+├── hardhat.config.ts
+├── jest.config.ts
+├── jest.setup.js
 ├── next.config.ts
 ├── package.json
 ├── postcss.config.mjs
+├── prisma
+    ├── schema.prisma
+    └── seed.ts
 ├── public
-    ├── assets
+    └── assets
     │   └── images
-    │   │   ├── auth
-    │   │       └── auth-bg.png
-    │   │   └── readme
-    │   │       ├── logo.png
-    │   │       └── logo2.png
-    ├── file.svg
-    ├── globe.svg
-    ├── next.svg
-    ├── vercel.svg
-    └── window.svg
+    │       ├── auth
+    │           └── auth-bg.png
+    │       ├── landing
+    │           ├── dashboard.png
+    │           └── hero-banner.png
+    │       ├── readme
+    │           ├── UML.png
+    │           ├── logo.png
+    │           └── logo2.png
+    │       └── tech
+    │           ├── cursor.svg
+    │           ├── faker.svg
+    │           ├── framermotion.svg
+    │           ├── nextjs.svg
+    │           ├── prisma.svg
+    │           ├── react.svg
+    │           ├── shadcnui.svg
+    │           ├── stripe.svg
+    │           ├── supabase.svg
+    │           ├── tailwind.svg
+    │           ├── vercel.svg
+    │           └── x.svg
+├── scripts
+    └── deploy.js
 ├── src
+    ├── abis
+    │   └── PaymentNFT.abi.json
     ├── app
     │   ├── (auth)
+    │   │   ├── auth
+    │   │   │   ├── callback
+    │   │   │   │   └── route.ts
+    │   │   │   └── confirm
+    │   │   │   │   └── route.ts
     │   │   ├── layout.tsx
     │   │   ├── login
     │   │   │   └── page.tsx
     │   │   └── register
     │   │   │   └── page.tsx
+    │   ├── (dasboard)
+    │   │   ├── dashboard
+    │   │   │   ├── airdrops
+    │   │   │   │   └── page.tsx
+    │   │   │   ├── analytics
+    │   │   │   │   └── page.tsx
+    │   │   │   ├── collection
+    │   │   │   │   └── page.tsx
+    │   │   │   ├── communaute
+    │   │   │   │   └── page.tsx
+    │   │   │   ├── data.json
+    │   │   │   ├── historique
+    │   │   │   │   └── page.tsx
+    │   │   │   ├── marketplace
+    │   │   │   │   └── page.tsx
+    │   │   │   ├── notifications
+    │   │   │   │   └── page.tsx
+    │   │   │   ├── page.tsx
+    │   │   │   ├── pokedex
+    │   │   │   │   ├── [slug]
+    │   │   │   │   │   └── page.tsx
+    │   │   │   │   └── page.tsx
+    │   │   │   ├── settings
+    │   │   │   │   └── page.tsx
+    │   │   │   ├── support
+    │   │   │   │   └── page.tsx
+    │   │   │   ├── tendances
+    │   │   │   │   └── page.tsx
+    │   │   │   ├── trading
+    │   │   │   │   └── page.tsx
+    │   │   │   ├── wallet
+    │   │   │   │   └── page.tsx
+    │   │   │   └── wishlist
+    │   │   │   │   └── page.tsx
+    │   │   └── layout.tsx
     │   ├── (root)
     │   │   ├── layout.tsx
     │   │   └── page.tsx
+    │   ├── api
+    │   │   ├── orders
+    │   │   │   └── route.ts
+    │   │   ├── pokemon
+    │   │   │   └── search
+    │   │   │   │   └── route.ts
+    │   │   └── portfolio
+    │   │   │   └── route.ts
     │   ├── favicon.ico
     │   ├── globals.css
     │   └── layout.tsx
     ├── components
+    │   ├── app-sidebar.tsx
+    │   ├── chart-area-interactive.tsx
+    │   ├── data-table.tsx
+    │   ├── footer.tsx
+    │   ├── mint-button.tsx
+    │   ├── nav-documents.tsx
+    │   ├── nav-main.tsx
+    │   ├── nav-secondary.tsx
+    │   ├── nav-user.tsx
+    │   ├── navBar.tsx
+    │   ├── pokemon
+    │   │   └── pokemon-price-chart.tsx
+    │   ├── section-cards.tsx
+    │   ├── site-header.tsx
     │   └── ui
+    │   │   ├── accordion.tsx
+    │   │   ├── alert-dialog.tsx
+    │   │   ├── alert.tsx
+    │   │   ├── aspect-ratio.tsx
+    │   │   ├── avatar.tsx
+    │   │   ├── badge.tsx
+    │   │   ├── breadcrumb.tsx
     │   │   ├── button.tsx
+    │   │   ├── calendar.tsx
     │   │   ├── card.tsx
     │   │   ├── chart.tsx
     │   │   ├── checkbox.tsx
+    │   │   ├── collapsible.tsx
+    │   │   ├── command.tsx
+    │   │   ├── context-menu.tsx
+    │   │   ├── dialog.tsx
+    │   │   ├── drawer.tsx
+    │   │   ├── dropdown-menu 2.tsx
+    │   │   ├── dropdown-menu.tsx
     │   │   ├── form.tsx
+    │   │   ├── hover-card.tsx
     │   │   ├── input-otp.tsx
     │   │   ├── input.tsx
     │   │   ├── label.tsx
+    │   │   ├── menubar.tsx
+    │   │   ├── navigation-menu.tsx
+    │   │   ├── pagination.tsx
+    │   │   ├── popover.tsx
+    │   │   ├── progress.tsx
+    │   │   ├── radio-group.tsx
+    │   │   ├── resizable.tsx
+    │   │   ├── scroll-area.tsx
     │   │   ├── select.tsx
     │   │   ├── separator.tsx
+    │   │   ├── sheet.tsx
+    │   │   ├── sidebar.tsx
     │   │   ├── skeleton.tsx
+    │   │   ├── slider 2.tsx
+    │   │   ├── slider.tsx
     │   │   ├── sonner.tsx
     │   │   ├── switch.tsx
-    │   │   └── textarea.tsx
+    │   │   ├── table.tsx
+    │   │   ├── tabs 2.tsx
+    │   │   ├── tabs.tsx
+    │   │   ├── textarea.tsx
+    │   │   ├── toggle-group.tsx
+    │   │   ├── toggle.tsx
+    │   │   └── tooltip.tsx
+    ├── hooks
+    │   ├── use-mobile.ts
+    │   └── useAuth.ts
     ├── lib
-    │   ├── services
-    │   │   └── pokeApi.service.ts
-    │   ├── types
+    │   └── utils.ts
+    ├── mappers
+    │   └── pokemon
+    │   │   └── mapPokemonType.ts
+    ├── middleware.ts
+    ├── services
+    │   ├── auth.service.ts
+    │   ├── order.service.ts
+    │   ├── pokeApi.server.ts
+    │   └── pokeApi.service.ts
+    ├── test
+    │   └── services
+    │   │   └── pokeApi.service.test.ts
+    ├── types
+    │   └── pokemon
     │   │   └── pokemon.types.ts
-    │   ├── utils.ts
-    │   └── validators
-    │   │   └── authSchema.ts
-    └── utils
+    ├── utils
+    │   ├── prisma
+    │   │   └── prisma.ts
     │   └── supabase
-    │       ├── client.ts
-    │       ├── middleware.ts
-    │       └── serveur.ts
-└── tsconfig.json
+    │   │   ├── client.ts
+    │   │   ├── middleware.ts
+    │   │   └── server.ts
+    └── validators
+    │   ├── auth.validators.ts
+    │   └── authSchema.ts
+├── tsconfig.hardhat.json
+├── tsconfig.json
+├── yarn 2.lock
+└── yarn.lock
 
 ```
 
