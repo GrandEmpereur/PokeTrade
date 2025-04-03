@@ -325,6 +325,7 @@ These tests confirm that the essential functionalities of your smart contract (p
 
 - ✅ `PaymentNFT` contract developed, handles minting an NFT in exchange for payment.
 - ✅ Hardhat unit tests to verify basic logic (payment/mint, withdrawal).
+- ❌ Adding Pokemon metadata (name, image, etc.) not yet integrated in the contract to generate the NFT.
 
 ##### 2. Testnet Deployment
 
