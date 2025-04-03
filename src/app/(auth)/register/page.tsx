@@ -9,6 +9,7 @@ import {
   registerSchema,
   type RegisterFormValues,
 } from '@/validators/auth.validators';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -25,8 +26,6 @@ import { authService } from '@/services/auth.service';
 
 export default function RegisterForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<boolean>(false);
   const router = useRouter();
 
   const form = useForm<RegisterFormValues>({
@@ -49,23 +48,21 @@ export default function RegisterForm() {
 
   async function onSubmit(values: RegisterFormValues) {
     setIsLoading(true);
-    setError(null);
-    setSuccess(false);
 
     try {
       const result = await authService.createUser(values);
 
       if (result?.error) {
-        setError(result.error);
+        toast.error(result.error);
       } else if (result?.success) {
-        setSuccess(true);
+        toast.success('Compte créé avec succès ! Redirection...');
         // Redirection après un court délai pour permettre à l'utilisateur de voir le message de succès
         setTimeout(() => {
           router.push('/');
         }, 2000);
       }
     } catch (error) {
-      setError("Une erreur est survenue lors de l'inscription");
+      toast.error("Une erreur est survenue lors de l'inscription");
     } finally {
       setIsLoading(false);
     }
@@ -79,18 +76,6 @@ export default function RegisterForm() {
           Entrez vos informations pour créer votre compte
         </p>
       </div>
-
-      {error && (
-        <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">
-          {error}
-        </div>
-      )}
-
-      {success && (
-        <div className="bg-green-500/15 text-green-500 text-sm p-3 rounded-md">
-          Compte créé avec succès ! Redirection...
-        </div>
-      )}
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6">
