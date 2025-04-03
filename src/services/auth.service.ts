@@ -237,11 +237,20 @@ export class AuthService {
             throw new Error("Cette méthode ne peut être appelée que côté client.");
         }
 
-        const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+        // Utiliser l'URL de l'app depuis les variables d'environnement ou générer une URL basée sur window.location
+        let redirectUrl;
+        if (process.env.NODE_ENV === 'production') {
+            redirectUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
+        } else {
+            redirectUrl = window.location.origin;
+        }
 
         const supabase = createClient();
         const { data, error } = await supabase.auth.signInWithOAuth({
-            provider: 'github'
+            provider: 'github',
+            options: {
+                redirectTo: `${redirectUrl}/auth/callback`,
+            }
         });
 
         if (error) {
@@ -260,13 +269,19 @@ export class AuthService {
             throw new Error("Cette méthode ne peut être appelée que côté client.");
         }
 
-        const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+        // Utiliser l'URL de l'app depuis les variables d'environnement ou générer une URL basée sur window.location
+        let redirectUrl;
+        if (process.env.NODE_ENV === 'production') {
+            redirectUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
+        } else {
+            redirectUrl = window.location.origin;
+        }
 
         const supabase = createClient();
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                redirectTo: `${appUrl}/auth/callback`,
+                redirectTo: `${redirectUrl}/auth/callback`,
             },
         });
 
