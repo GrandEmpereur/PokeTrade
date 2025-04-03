@@ -420,270 +420,259 @@ export default function PokedexPage() {
     filters.types.length > 0 || filters.generations.length > 0;
 
   return (
-    <SidebarProvider>
-      <AppSidebar variant="inset" />
-      <SidebarInset>
-        <SiteHeader />
-        <div className="flex flex-1 flex-col">
-          <div className="@container/main flex flex-1 flex-col gap-2">
-            <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-              <div className="px-4 lg:px-6">
-                <h1 className="text-2xl font-bold tracking-tight">Pokedex</h1>
-                <p className="text-muted-foreground">
-                  Explorez tous les Pokémon disponibles, leurs statistiques et
-                  leurs valeurs actuelles sur le marché.
-                </p>
+    <div className="flex flex-1 flex-col">
+      <div className="@container/main flex flex-1 flex-col gap-2">
+        <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+          <div className="px-4 lg:px-6">
+            <h1 className="text-2xl font-bold tracking-tight">Pokedex</h1>
+            <p className="text-muted-foreground">
+              Explorez tous les Pokémon disponibles, leurs statistiques et leurs
+              valeurs actuelles sur le marché.
+            </p>
+          </div>
+
+          <div className="px-4 lg:px-6">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="relative max-w-sm flex-1">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="Rechercher un Pokémon..."
+                  className="pl-8"
+                  value={searchTerm}
+                  onChange={handleSearch}
+                />
               </div>
-
-              <div className="px-4 lg:px-6">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="relative max-w-sm flex-1">
-                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      type="search"
-                      placeholder="Rechercher un Pokémon..."
-                      className="pl-8"
-                      value={searchTerm}
-                      onChange={handleSearch}
-                    />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {/* Popover de filtres */}
-                    <Popover
-                      open={isFilterPopoverOpen}
-                      onOpenChange={setIsFilterPopoverOpen}
+              <div className="flex items-center gap-2">
+                {/* Popover de filtres */}
+                <Popover
+                  open={isFilterPopoverOpen}
+                  onOpenChange={setIsFilterPopoverOpen}
+                >
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={hasActiveFilters ? 'default' : 'outline'}
+                      size="sm"
                     >
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant={hasActiveFilters ? 'default' : 'outline'}
-                          size="sm"
+                      <Filter className="mr-2 h-4 w-4" />
+                      Filtres
+                      {hasActiveFilters && (
+                        <Badge
+                          variant="secondary"
+                          className="ml-2 px-1 rounded-full"
                         >
-                          <Filter className="mr-2 h-4 w-4" />
-                          Filtres
-                          {hasActiveFilters && (
-                            <Badge
-                              variant="secondary"
-                              className="ml-2 px-1 rounded-full"
-                            >
-                              {filters.types.length +
-                                filters.generations.length}
-                            </Badge>
-                          )}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-80 p-4" align="end">
+                          {filters.types.length + filters.generations.length}
+                        </Badge>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80 p-4" align="end">
+                    <div className="space-y-4">
+                      <h3 className="font-medium">Filtrer les Pokémon</h3>
+
+                      <ScrollArea className="h-[300px] pr-4">
                         <div className="space-y-4">
-                          <h3 className="font-medium">Filtrer les Pokémon</h3>
-
-                          <ScrollArea className="h-[300px] pr-4">
-                            <div className="space-y-4">
-                              {/* Filtres par type */}
-                              <div>
-                                <h4 className="text-sm font-medium mb-2">
-                                  Types
-                                </h4>
-                                <div className="grid grid-cols-2 gap-2">
-                                  {pokemonTypes.map((type) => {
-                                    const styles = getTypeBadgeStyles(type);
-                                    return (
-                                      <div
-                                        key={type}
-                                        className="flex items-center space-x-2"
-                                      >
-                                        <Checkbox
-                                          id={`filter-type-${type}`}
-                                          checked={filters.types.includes(type)}
-                                          onCheckedChange={(checked) =>
-                                            handleTypeFilterChange(
-                                              type,
-                                              checked === true
-                                            )
-                                          }
-                                        />
-                                        <Label
-                                          htmlFor={`filter-type-${type}`}
-                                          className="flex items-center text-xs"
-                                        >
-                                          <span
-                                            className={`px-1.5 py-0 rounded-full ${styles.bg} ${styles.text} ${styles.border} mr-1`}
-                                          >
-                                            {type.charAt(0).toUpperCase() +
-                                              type.slice(1)}
-                                          </span>
-                                        </Label>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-
-                              <Separator />
-
-                              {/* Filtres par génération */}
-                              <div>
-                                <h4 className="text-sm font-medium mb-2">
-                                  Générations
-                                </h4>
-                                <div className="grid grid-cols-3 gap-2">
-                                  {pokemonGenerations.map((gen) => (
-                                    <div
-                                      key={gen}
-                                      className="flex items-center space-x-2"
+                          {/* Filtres par type */}
+                          <div>
+                            <h4 className="text-sm font-medium mb-2">Types</h4>
+                            <div className="grid grid-cols-2 gap-2">
+                              {pokemonTypes.map((type) => {
+                                const styles = getTypeBadgeStyles(type);
+                                return (
+                                  <div
+                                    key={type}
+                                    className="flex items-center space-x-2"
+                                  >
+                                    <Checkbox
+                                      id={`filter-type-${type}`}
+                                      checked={filters.types.includes(type)}
+                                      onCheckedChange={(checked) =>
+                                        handleTypeFilterChange(
+                                          type,
+                                          checked === true
+                                        )
+                                      }
+                                    />
+                                    <Label
+                                      htmlFor={`filter-type-${type}`}
+                                      className="flex items-center text-xs"
                                     >
-                                      <Checkbox
-                                        id={`filter-gen-${gen}`}
-                                        checked={filters.generations.includes(
-                                          gen
-                                        )}
-                                        onCheckedChange={(checked) =>
-                                          handleGenerationFilterChange(
-                                            gen,
-                                            checked === true
-                                          )
-                                        }
-                                      />
-                                      <Label
-                                        htmlFor={`filter-gen-${gen}`}
-                                        className="text-xs"
+                                      <span
+                                        className={`px-1.5 py-0 rounded-full ${styles.bg} ${styles.text} ${styles.border} mr-1`}
                                       >
-                                        Gen {gen}
-                                      </Label>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
+                                        {type.charAt(0).toUpperCase() +
+                                          type.slice(1)}
+                                      </span>
+                                    </Label>
+                                  </div>
+                                );
+                              })}
                             </div>
-                          </ScrollArea>
+                          </div>
 
-                          <div className="flex justify-between gap-2 pt-2">
-                            <Button
-                              variant="outline"
-                              onClick={resetFilters}
-                              size="sm"
-                              className="text-xs"
-                            >
-                              Réinitialiser
-                            </Button>
-                            <Button
-                              onClick={applyFilters}
-                              size="sm"
-                              className="text-xs"
-                            >
-                              Appliquer
-                            </Button>
+                          <Separator />
+
+                          {/* Filtres par génération */}
+                          <div>
+                            <h4 className="text-sm font-medium mb-2">
+                              Générations
+                            </h4>
+                            <div className="grid grid-cols-3 gap-2">
+                              {pokemonGenerations.map((gen) => (
+                                <div
+                                  key={gen}
+                                  className="flex items-center space-x-2"
+                                >
+                                  <Checkbox
+                                    id={`filter-gen-${gen}`}
+                                    checked={filters.generations.includes(gen)}
+                                    onCheckedChange={(checked) =>
+                                      handleGenerationFilterChange(
+                                        gen,
+                                        checked === true
+                                      )
+                                    }
+                                  />
+                                  <Label
+                                    htmlFor={`filter-gen-${gen}`}
+                                    className="text-xs"
+                                  >
+                                    Gen {gen}
+                                  </Label>
+                                </div>
+                              ))}
+                            </div>
                           </div>
                         </div>
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-                </div>
-              </div>
+                      </ScrollArea>
 
-              <div className="px-4 lg:px-6">
-                <Tabs
-                  defaultValue="all"
-                  className="w-full"
-                  onValueChange={setActiveTab}
-                >
-                  <TabsList className="mb-4 flex flex-wrap">
-                    <TabsTrigger value="all">Tous</TabsTrigger>
-                    <TabsTrigger value="gen1">Génération 1</TabsTrigger>
-                    <TabsTrigger value="gen2">Génération 2</TabsTrigger>
-                    <TabsTrigger value="gen3">Génération 3</TabsTrigger>
-                    <TabsTrigger value="gen4">Génération 4</TabsTrigger>
-                    <TabsTrigger value="gen5">Génération 5</TabsTrigger>
-                    <TabsTrigger value="gen6">Génération 6</TabsTrigger>
-                    <TabsTrigger value="gen7">Génération 7</TabsTrigger>
-                    <TabsTrigger value="gen8">Génération 8</TabsTrigger>
-                    <TabsTrigger value="gen9">Génération 9</TabsTrigger>
-                  </TabsList>
-
-                  <TabsContent value="all">
-                    <PokemonAllHighlightsWithPagination
-                      searchTerm={searchTerm}
-                      typeFilters={filters.types}
-                      generationFilters={filters.generations}
-                    />
-                  </TabsContent>
-
-                  <TabsContent value="gen1">
-                    <PokemonGenerationWithPagination
-                      generation={1}
-                      searchTerm={searchTerm}
-                      typeFilters={filters.types}
-                    />
-                  </TabsContent>
-
-                  <TabsContent value="gen2">
-                    <PokemonGenerationWithPagination
-                      generation={2}
-                      searchTerm={searchTerm}
-                      typeFilters={filters.types}
-                    />
-                  </TabsContent>
-
-                  <TabsContent value="gen3">
-                    <PokemonGenerationWithPagination
-                      generation={3}
-                      searchTerm={searchTerm}
-                      typeFilters={filters.types}
-                    />
-                  </TabsContent>
-
-                  <TabsContent value="gen4">
-                    <PokemonGenerationWithPagination
-                      generation={4}
-                      searchTerm={searchTerm}
-                      typeFilters={filters.types}
-                    />
-                  </TabsContent>
-
-                  <TabsContent value="gen5">
-                    <PokemonGenerationWithPagination
-                      generation={5}
-                      searchTerm={searchTerm}
-                      typeFilters={filters.types}
-                    />
-                  </TabsContent>
-
-                  <TabsContent value="gen6">
-                    <PokemonGenerationWithPagination
-                      generation={6}
-                      searchTerm={searchTerm}
-                      typeFilters={filters.types}
-                    />
-                  </TabsContent>
-
-                  <TabsContent value="gen7">
-                    <PokemonGenerationWithPagination
-                      generation={7}
-                      searchTerm={searchTerm}
-                      typeFilters={filters.types}
-                    />
-                  </TabsContent>
-
-                  <TabsContent value="gen8">
-                    <PokemonGenerationWithPagination
-                      generation={8}
-                      searchTerm={searchTerm}
-                      typeFilters={filters.types}
-                    />
-                  </TabsContent>
-
-                  <TabsContent value="gen9">
-                    <PokemonGenerationWithPagination
-                      generation={9}
-                      searchTerm={searchTerm}
-                      typeFilters={filters.types}
-                    />
-                  </TabsContent>
-                </Tabs>
+                      <div className="flex justify-between gap-2 pt-2">
+                        <Button
+                          variant="outline"
+                          onClick={resetFilters}
+                          size="sm"
+                          className="text-xs"
+                        >
+                          Réinitialiser
+                        </Button>
+                        <Button
+                          onClick={applyFilters}
+                          size="sm"
+                          className="text-xs"
+                        >
+                          Appliquer
+                        </Button>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
               </div>
             </div>
           </div>
+
+          <div className="px-4 lg:px-6">
+            <Tabs
+              defaultValue="all"
+              className="w-full"
+              onValueChange={setActiveTab}
+            >
+              <TabsList className="mb-4 flex flex-wrap">
+                <TabsTrigger value="all">Tous</TabsTrigger>
+                <TabsTrigger value="gen1">Génération 1</TabsTrigger>
+                <TabsTrigger value="gen2">Génération 2</TabsTrigger>
+                <TabsTrigger value="gen3">Génération 3</TabsTrigger>
+                <TabsTrigger value="gen4">Génération 4</TabsTrigger>
+                <TabsTrigger value="gen5">Génération 5</TabsTrigger>
+                <TabsTrigger value="gen6">Génération 6</TabsTrigger>
+                <TabsTrigger value="gen7">Génération 7</TabsTrigger>
+                <TabsTrigger value="gen8">Génération 8</TabsTrigger>
+                <TabsTrigger value="gen9">Génération 9</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="all">
+                <PokemonAllHighlightsWithPagination
+                  searchTerm={searchTerm}
+                  typeFilters={filters.types}
+                  generationFilters={filters.generations}
+                />
+              </TabsContent>
+
+              <TabsContent value="gen1">
+                <PokemonGenerationWithPagination
+                  generation={1}
+                  searchTerm={searchTerm}
+                  typeFilters={filters.types}
+                />
+              </TabsContent>
+
+              <TabsContent value="gen2">
+                <PokemonGenerationWithPagination
+                  generation={2}
+                  searchTerm={searchTerm}
+                  typeFilters={filters.types}
+                />
+              </TabsContent>
+
+              <TabsContent value="gen3">
+                <PokemonGenerationWithPagination
+                  generation={3}
+                  searchTerm={searchTerm}
+                  typeFilters={filters.types}
+                />
+              </TabsContent>
+
+              <TabsContent value="gen4">
+                <PokemonGenerationWithPagination
+                  generation={4}
+                  searchTerm={searchTerm}
+                  typeFilters={filters.types}
+                />
+              </TabsContent>
+
+              <TabsContent value="gen5">
+                <PokemonGenerationWithPagination
+                  generation={5}
+                  searchTerm={searchTerm}
+                  typeFilters={filters.types}
+                />
+              </TabsContent>
+
+              <TabsContent value="gen6">
+                <PokemonGenerationWithPagination
+                  generation={6}
+                  searchTerm={searchTerm}
+                  typeFilters={filters.types}
+                />
+              </TabsContent>
+
+              <TabsContent value="gen7">
+                <PokemonGenerationWithPagination
+                  generation={7}
+                  searchTerm={searchTerm}
+                  typeFilters={filters.types}
+                />
+              </TabsContent>
+
+              <TabsContent value="gen8">
+                <PokemonGenerationWithPagination
+                  generation={8}
+                  searchTerm={searchTerm}
+                  typeFilters={filters.types}
+                />
+              </TabsContent>
+
+              <TabsContent value="gen9">
+                <PokemonGenerationWithPagination
+                  generation={9}
+                  searchTerm={searchTerm}
+                  typeFilters={filters.types}
+                />
+              </TabsContent>
+            </Tabs>
+          </div>
         </div>
-      </SidebarInset>
-    </SidebarProvider>
+      </div>
+    </div>
   );
 }
 

@@ -23,8 +23,8 @@ export default function NavBar() {
   useEffect(() => {
     const fetchUser = async () => {
       setIsLoading(true);
-      const { success, data } = await authService.getUser();
-      if (success && data) {
+      const { data } = await authService.getUser();
+      if (data) {
         setUser(data);
       }
       setIsLoading(false);

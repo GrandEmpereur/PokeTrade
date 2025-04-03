@@ -71,12 +71,14 @@ export default function Home() {
               transition={{ duration: 0.8, delay: 0.6 }}
               className="bottom-0 w-full max-w-5xl mx-auto"
             >
-              <div className="relative w-full aspect-[16/9] shadow-2xl rounded-t-lg overflow-hidden border border-neutral-800">
+              <div className="relative w-full shadow-2xl rounded-t-lg overflow-hidden border border-neutral-800">
                 <Image
-                  src="/assets/images/landing/dashboard-preview.png"
+                  src="/assets/images/landing/dashboard.png"
                   alt="PokéTrade Dashboard Interface"
-                  fill
-                  className="object-cover"
+                  width={1440}
+                  height={810}
+                  className="object-contain w-full h-auto"
+                  priority
                 />
               </div>
             </motion.div>

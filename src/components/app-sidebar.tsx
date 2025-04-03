@@ -34,6 +34,7 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import Link from 'next/link';
+
 const data = {
   navMain: [
     {
