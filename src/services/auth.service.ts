@@ -237,11 +237,13 @@ export class AuthService {
             throw new Error("Cette méthode ne peut être appelée que côté client.");
         }
 
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+
         const supabase = createClient();
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: 'github',
             options: {
-                redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
+                redirectTo: `${appUrl}/auth/callback`,
             },
         });
 
@@ -261,11 +263,13 @@ export class AuthService {
             throw new Error("Cette méthode ne peut être appelée que côté client.");
         }
 
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+
         const supabase = createClient();
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
+                redirectTo: `${appUrl}/auth/callback`,
             },
         });
 

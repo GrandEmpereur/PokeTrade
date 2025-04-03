@@ -19,6 +19,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import { MintButton } from '@/components/mint-button';
 import {
   AlertCircle,
   ArrowUpRight,
@@ -675,7 +676,7 @@ export default function PokemonDetailPage({
                                 <span className="text-muted-foreground">
                                   Prix:
                                 </span>
-                                <span className="font-bold ml-2">0.05 ETH</span>
+                                <MintButton />
                               </div>
                               <div>
                                 <span className="text-muted-foreground">
